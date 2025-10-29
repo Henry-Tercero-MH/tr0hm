@@ -14,6 +14,10 @@ export default class MyDocument extends Document {
           <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#0f172a" />
           <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+          {/* iOS meta tags to improve Add to Home Screen behavior */}
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="Tr0hm" />
         </Head>
         <body>
           <script dangerouslySetInnerHTML={{ __html: setThemeScript }} />

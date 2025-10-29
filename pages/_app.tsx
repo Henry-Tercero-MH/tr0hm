@@ -5,6 +5,7 @@ import { NotificationsProvider } from '../context/NotificationsContext';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 import NotificationsDropdown from '../components/NotificationsDropdown';
+import InstallButton from '../components/InstallButton';
 import { useEffect, useState, useRef } from 'react';
 import getDayTheme from '../lib/dayTheme';
 import api from '../lib/api';
@@ -190,6 +191,7 @@ function Header() {
             <button className="btn btn-ghost" onClick={logout}>Logout</button>
           </>
         )}
+        <InstallButton />
         <NotificationsDropdown />
       </div>
     </header>
