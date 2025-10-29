@@ -32,6 +32,7 @@ function decodeToken(token: string) {
 
 function Header() {
   const { user, logout } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState<string>('dark');
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -124,6 +125,12 @@ function Header() {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setShowThemeMenu(false);
       }
+      // if clicking outside the header nav close mobile menu
+      const target = e.target as Node;
+      const header = document.querySelector('header.site-header');
+      if (mobileOpen && header && !header.contains(target)) {
+        setMobileOpen(false);
+      }
     }
     if (showThemeMenu) document.addEventListener('click', onDocClick);
     return () => document.removeEventListener('click', onDocClick);
@@ -151,7 +158,22 @@ function Header() {
   <h1>Tr0hm</h1>
       </div>
 
-      <div className="nav-links">
+      <button
+        className="hamburger"
+        aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+        aria-expanded={mobileOpen}
+        onClick={() => setMobileOpen((s) => !s)}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          {mobileOpen ? (
+            <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          ) : (
+            <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          )}
+        </svg>
+      </button>
+
+      <div className={`nav-links ${mobileOpen ? 'mobile-open' : ''}`} role="navigation">
         <div style={{ position: 'relative' }} ref={menuRef}>
           <button aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
             {theme === 'dark' ? (
@@ -177,7 +199,7 @@ function Header() {
         <a href="/">Feed</a>
         <a href="/users">Usuarios</a>
         <a href="/messages">Mensajes</a>
-        {!user && <a href="/login">Login</a>}
+        {!user && <a href="/login" onClick={() => setMobileOpen(false)}>Login</a>}
         {user && (
           <>
             <a href={`/users/${user.id}`} style={{ display: 'flex', gap: 8, alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
@@ -188,7 +210,7 @@ function Header() {
               )}
               <span className="muted">{user.username}</span>
             </a>
-            <button className="btn btn-ghost" onClick={logout}>Logout</button>
+            <button className="btn btn-ghost" onClick={() => { setMobileOpen(false); logout(); }}>Logout</button>
           </>
         )}
         <InstallButton />
