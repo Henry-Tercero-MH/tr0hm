@@ -9,7 +9,12 @@ export default class MyDocument extends Document {
 
     return (
       <Html>
-        <Head />
+        <Head>
+          {/* PWA manifest and theme color */}
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="theme-color" content="#0f172a" />
+          <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+        </Head>
         <body>
           <script dangerouslySetInnerHTML={{ __html: setThemeScript }} />
           <Main />

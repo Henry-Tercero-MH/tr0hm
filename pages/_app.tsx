@@ -197,6 +197,22 @@ function Header() {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // Listen for the install prompt event so the UI can trigger it if needed.
+  // We keep this lightweight: store the deferred event on window for later use.
+  useEffect(() => {
+    function onBeforeInstallPrompt(e: any) {
+      // Prevent automatic prompt
+      e.preventDefault();
+      try {
+        (window as any).__trohmDeferredPrompt = e;
+      } catch (err) {
+        /* ignore */
+      }
+    }
+    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt as EventListener);
+    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt as EventListener);
+  }, []);
+
   return (
     <AuthProvider>
       <NotificationsProvider>
@@ -205,6 +221,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <title>Tr0hm</title>
             <meta name="description" content="Tr0hm — Comunidad" />
             <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+            <link rel="manifest" href="/manifest.json" />
           </Head>
           <Header />
           <Component {...pageProps} />
