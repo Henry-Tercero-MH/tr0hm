@@ -1,0 +1,21 @@
+node_modules/
+.env
+.next/
+dist/
+build/
+.vscode/
+.idea/
+.DS_Store
+coverage/
+*.log
+
+# dotenv variants and secrets
+.env.local
+.env.production
+.env.development
+.env.test
+.env.*
+!.env.example
+.envrc
+secrets/
+secrets/*.env
