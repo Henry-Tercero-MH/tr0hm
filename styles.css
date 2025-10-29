@@ -74,6 +74,10 @@ header.site-header{
 .nav-links a{ color:var(--muted); text-decoration:none; padding:6px 8px; border-radius:6px; }
 .nav-links a:hover{ background: rgba(255,255,255,0.02); color:var(--text); }
 
+/* Make nav wrap when needed to avoid overflow on small screens */
+.nav-links{ flex-wrap: wrap; }
+
+
 /* Cards / posts */
 .card, .post-card{
   background: var(--card);
@@ -146,6 +150,19 @@ textarea{ min-height:100px; resize:vertical; }
 @media (max-width:720px){
   main { margin:12px; padding:12px; }
   header.site-header{ max-width:calc(100% - 24px); margin:12px auto 0; }
+}
+
+/* Stack header content on narrow screens to prevent navbar overflow */
+@media (max-width:520px){
+  header.site-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    padding:10px 12px;
+  }
+  .brand{ width:100%; display:flex; align-items:center; justify-content:space-between; }
+  .nav-links{ width:100%; margin-top:6px; gap:8px; justify-content:flex-start; }
+  .nav-links a, .nav-links button, .nav-links .btn{ flex: none; white-space:nowrap; }
 }
 
 /* Stories */
