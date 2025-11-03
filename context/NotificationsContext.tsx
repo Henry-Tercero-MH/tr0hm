@@ -44,10 +44,11 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       .catch(() => {});
 
     // connect socket dynamically to avoid SSR issues
-    (async () => {
-      try {
-  const { io } = await import('socket.io-client');
-  socket = io(process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app', { auth: { token } });
+      (async () => {
+        try {
+          const { io } = await import('socket.io-client');
+          // include credentials so cookie-based sessions are sent to the server
+          socket = io(process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app', { auth: { token }, withCredentials: true });
         socket.on('connect', () => {
           // console.log('notif socket connected', socket.id);
         });

@@ -2,7 +2,9 @@ import axios from 'axios';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app';
 
-const api = axios.create({ baseURL: API });
+// Create axios instance that sends cookies (credentials) by default so the httpOnly refresh cookie
+// set by the backend is included in requests (important for /api/auth/refresh and protected calls).
+const api = axios.create({ baseURL: API, withCredentials: true });
 
 // Request interceptor to add Authorization header if token exists in localStorage
 api.interceptors.request.use((config) => {
@@ -51,9 +53,13 @@ api.interceptors.response.use(
       isRefreshing = true;
       try {
         // call refresh endpoint using a plain axios instance to avoid interceptor loop
-        // send refresh token stored in localStorage (no cookies used)
+        // Prefer cookie-based refresh (httpOnly cookie). Still include stored refresh in body as fallback.
         const storedRefresh = typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
-        const refreshRes = await axios.post(`${API}/api/auth/refresh`, { refreshToken: storedRefresh });
+        const refreshRes = await axios.post(
+          `${API}/api/auth/refresh`,
+          storedRefresh ? { refreshToken: storedRefresh } : {},
+          { withCredentials: true }
+        );
         const newToken = refreshRes.data?.token;
         const newRefresh = refreshRes.data?.refreshToken;
         if (newToken) {
