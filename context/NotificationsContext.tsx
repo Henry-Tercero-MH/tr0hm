@@ -46,8 +46,8 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     // connect socket dynamically to avoid SSR issues
     (async () => {
       try {
-        const { io } = await import('socket.io-client');
-        socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000', { auth: { token } });
+  const { io } = await import('socket.io-client');
+  socket = io(process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app', { auth: { token } });
         socket.on('connect', () => {
           // console.log('notif socket connected', socket.id);
         });

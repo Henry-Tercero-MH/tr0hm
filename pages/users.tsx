@@ -27,7 +27,7 @@ export default function UsersPage({ users }: { users: User[] }) {
 }
 
 export async function getServerSideProps() {
-  const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const api = process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app';
   try {
     const res = await axios.get(`${api}/api/users`);
     return { props: { users: res.data } };

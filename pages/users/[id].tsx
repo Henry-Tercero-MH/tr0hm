@@ -106,7 +106,7 @@ export default function UserProfile({ user }: { user: User | null }) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.params as any;
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app';
   try {
     const res = await axios.get(`${apiUrl}/api/users/${id}`);
     return { props: { user: res.data } };

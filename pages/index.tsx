@@ -562,7 +562,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
 }
 
 export async function getServerSideProps(context: any) {
-  const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const api = process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app';
   const page = Number(context.query.page || 1);
   const limit = 10;
   try {

@@ -17,7 +17,7 @@ export default function Register() {
     setLoading(true);
     setError(null);
     try {
-      const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const api = process.env.NEXT_PUBLIC_API_URL || 'https://trohm-production.up.railway.app';
       await axios.post(`${api}/api/auth/register`, { username, email, password });
       // auto-login after register
       await login(email, password);
