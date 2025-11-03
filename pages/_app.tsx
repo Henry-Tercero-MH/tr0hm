@@ -5,7 +5,6 @@ import { NotificationsProvider } from '../context/NotificationsContext';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 import NotificationsDropdown from '../components/NotificationsDropdown';
-import InstallButton from '../components/InstallButton';
 import { useEffect, useState, useRef } from 'react';
 import getDayTheme from '../lib/dayTheme';
 import api from '../lib/api';
@@ -32,7 +31,6 @@ function decodeToken(token: string) {
 
 function Header() {
   const { user, logout } = useAuth();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState<string>('dark');
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -125,12 +123,6 @@ function Header() {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setShowThemeMenu(false);
       }
-      // if clicking outside the header nav close mobile menu
-      const target = e.target as Node;
-      const header = document.querySelector('header.site-header');
-      if (mobileOpen && header && !header.contains(target)) {
-        setMobileOpen(false);
-      }
     }
     if (showThemeMenu) document.addEventListener('click', onDocClick);
     return () => document.removeEventListener('click', onDocClick);
@@ -158,22 +150,7 @@ function Header() {
   <h1>Tr0hm</h1>
       </div>
 
-      <button
-        className="hamburger"
-        aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
-        aria-expanded={mobileOpen}
-        onClick={() => setMobileOpen((s) => !s)}
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-          {mobileOpen ? (
-            <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          ) : (
-            <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          )}
-        </svg>
-      </button>
-
-      <div className={`nav-links ${mobileOpen ? 'mobile-open' : ''}`} role="navigation">
+      <div className="nav-links">
         <div style={{ position: 'relative' }} ref={menuRef}>
           <button aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
             {theme === 'dark' ? (
@@ -199,7 +176,7 @@ function Header() {
         <a href="/">Feed</a>
         <a href="/users">Usuarios</a>
         <a href="/messages">Mensajes</a>
-        {!user && <a href="/login" onClick={() => setMobileOpen(false)}>Login</a>}
+        {!user && <a href="/login">Login</a>}
         {user && (
           <>
             <a href={`/users/${user.id}`} style={{ display: 'flex', gap: 8, alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
@@ -210,10 +187,9 @@ function Header() {
               )}
               <span className="muted">{user.username}</span>
             </a>
-            <button className="btn btn-ghost" onClick={() => { setMobileOpen(false); logout(); }}>Logout</button>
+            <button className="btn btn-ghost" onClick={logout}>Logout</button>
           </>
         )}
-        <InstallButton />
         <NotificationsDropdown />
       </div>
     </header>
@@ -221,22 +197,6 @@ function Header() {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // Listen for the install prompt event so the UI can trigger it if needed.
-  // We keep this lightweight: store the deferred event on window for later use.
-  useEffect(() => {
-    function onBeforeInstallPrompt(e: any) {
-      // Prevent automatic prompt
-      e.preventDefault();
-      try {
-        (window as any).__trohmDeferredPrompt = e;
-      } catch (err) {
-        /* ignore */
-      }
-    }
-    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt as EventListener);
-    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt as EventListener);
-  }, []);
-
   return (
     <AuthProvider>
       <NotificationsProvider>
@@ -245,7 +205,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             <title>Tr0hm</title>
             <meta name="description" content="Tr0hm — Comunidad" />
             <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-            <link rel="manifest" href="/manifest.json" />
           </Head>
           <Header />
           <Component {...pageProps} />
