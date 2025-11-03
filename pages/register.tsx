@@ -36,11 +36,17 @@ export default function Register() {
         {error && <div className="muted" style={{ color: 'var(--danger)' }}>{error}</div>}
         <form onSubmit={submit}>
           <label>Usuario</label>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" />
+          <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" 
+            onFocus={() => console.log('register input focus username, disabled=', (document.querySelector('input[placeholder="username"]') as HTMLInputElement)?.disabled)}
+            onKeyDown={(e) => console.log('username keydown', e.key)} />
           <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" 
+            onFocus={() => console.log('register input focus email, disabled=', (document.querySelector('input[placeholder="email"]') as HTMLInputElement)?.disabled)}
+            onKeyDown={(e) => console.log('email keydown', e.key)} />
           <label>Contraseña</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" 
+            onFocus={() => console.log('register input focus password, disabled=', (document.querySelector('input[placeholder="password"]') as HTMLInputElement)?.disabled)}
+            onKeyDown={(e) => console.log('password keydown', e.key)} />
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
             <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Creando...' : 'Crear cuenta'}</button>
             <a className="btn btn-ghost" href="/login">Volver a login</a>
