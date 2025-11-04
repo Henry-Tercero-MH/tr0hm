@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +11,23 @@ export default function Register() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { login } = useAuth();
+  const [mountCount, setMountCount] = useState<number>(0);
+  const [lastMountAt, setLastMountAt] = useState<string>('');
+
+  useEffect(() => {
+    try {
+      const key = 'register:mountCount';
+      const prev = Number(window.sessionStorage.getItem(key) || '0');
+      const next = prev + 1;
+      window.sessionStorage.setItem(key, String(next));
+      setMountCount(next);
+      setLastMountAt(new Date().toISOString());
+      console.log('[register] mount', next);
+      return () => console.log('[register] unmount');
+    } catch (e) {
+      // ignore
+    }
+  }, []);
 
   async function submit(e: any) {
     e.preventDefault();
@@ -31,6 +48,13 @@ export default function Register() {
 
   return (
     <main>
+      <div style={{ position: 'fixed', right: 12, top: 80, zIndex: 9999, background: 'rgba(0,0,0,0.6)', color: '#fff', padding: 8, borderRadius: 8, fontSize: 12 }}>
+        <div><strong>Debug</strong></div>
+        <div>mounts: {mountCount}</div>
+        <div>last: {lastMountAt}</div>
+        <div>path: {router.asPath}</div>
+        <div>visibility: {typeof document !== 'undefined' ? document.visibilityState : 'na'}</div>
+      </div>
       <div className="card" style={{ maxWidth: 520, margin: '24px auto' }}>
         <h2>Crear cuenta</h2>
         {error && <div className="muted" style={{ color: 'var(--danger)' }}>{error}</div>}
