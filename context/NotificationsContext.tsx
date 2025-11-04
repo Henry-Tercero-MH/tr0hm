@@ -98,8 +98,12 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
           if (p !== 'granted') return;
         }
 
-        const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-        if (!vapidKey) return;
+  // Public VAPID key used to subscribe the client to PushManager.
+  // It's safe for this public key to be embedded in client code;
+  // the private key MUST remain on the server and never be exposed.
+  const VAPID_PUBLIC_KEY_FALLBACK = 'BME89Ou996yHKe_x8NSC11GQn-1Dbya5zU0W57QY4c_hVK9bio2L4AxDV0m6YY5WBsGBEdbBuF5VqlbAWbQdwqc';
+  const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY_FALLBACK;
+  if (!vapidKey) return;
 
         const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidKey) });
         // send subscription to backend
