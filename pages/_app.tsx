@@ -33,6 +33,7 @@ function Header() {
   const { user, logout } = useAuth();
   const [theme, setTheme] = useState<string>('dark');
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23e5e7eb'/><text x='50' y='55' font-size='40' text-anchor='middle' fill='%239ca3af'>?</text></svg>";
 
@@ -151,6 +152,21 @@ function Header() {
       </div>
 
       <div className="nav-links">
+        {/* Hamburger for small screens */}
+        <button
+          className="hamburger"
+          aria-label={showMobileMenu ? 'Cerrar menú' : 'Abrir menú'}
+          onClick={() => setShowMobileMenu((s) => !s)}
+          aria-expanded={showMobileMenu}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            {showMobileMenu ? (
+              <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            ) : (
+              <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            )}
+          </svg>
+        </button>
         <div style={{ position: 'relative' }} ref={menuRef}>
           <button aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
             {theme === 'dark' ? (
@@ -191,6 +207,21 @@ function Header() {
           </>
         )}
         <NotificationsDropdown />
+        {/* Mobile nav overlay */}
+        {showMobileMenu && (
+          <nav className="mobile-nav" role="menu" aria-label="Menu principal">
+            <a href="/">Feed</a>
+            <a href="/users">Usuarios</a>
+            <a href="/messages">Mensajes</a>
+            {!user && <a href="/login">Login</a>}
+            {user && (
+              <>
+                <a href={`/users/${user.id}`}>Mi perfil</a>
+                <button className="btn btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
+              </>
+            )}
+          </nav>
+        )}
       </div>
     </header>
   );

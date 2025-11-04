@@ -74,6 +74,37 @@ header.site-header{
 .nav-links a{ color:var(--muted); text-decoration:none; padding:6px 8px; border-radius:6px; }
 .nav-links a:hover{ background: rgba(255,255,255,0.02); color:var(--text); }
 
+/* Hamburger button - hidden on desktop, visible on small screens */
+.hamburger{
+  display:none;
+  background:transparent;
+  border:0;
+  padding:8px;
+  border-radius:8px;
+  cursor:pointer;
+  color:var(--muted);
+}
+.hamburger svg{ display:block; }
+
+/* Mobile nav overlay */
+.mobile-nav{
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 12px;
+  background: var(--card);
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.04));
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 60;
+  min-width: 180px;
+}
+.mobile-nav a{ color:var(--text); padding:8px; border-radius:8px; text-decoration:none; }
+.mobile-nav .btn{ width:100%; }
+
 /* Cards / posts */
 .card, .post-card{
   background: var(--card);
@@ -180,6 +211,9 @@ textarea{ min-height:100px; resize:vertical; }
 @media (max-width:720px){
   main { margin:12px; padding:12px; }
   header.site-header{ max-width:calc(100% - 24px); margin:12px auto 0; }
+  /* show hamburger, hide inline nav links */
+  .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
+  .nav-links > a, .nav-links > .theme-toggle, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted, .nav-links > .brand { display: none; }
 }
 
 /* Ensure main and header adapt to small/mobile viewports and don't stay fixed width */
