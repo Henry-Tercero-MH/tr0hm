@@ -41,7 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handler = () => {
       try { localStorage.removeItem('token'); } catch (e) {}
       setUser(null);
-      router.push('/login');
+      // avoid forcing a redirect to /login when the user is already on
+      // an auth-related page (e.g. /login or /register). This prevents
+      // navigation loops when unauthenticated pages call /auth/me on mount.
+      const avoid = ['/login', '/register'];
+      try {
+        if (!avoid.includes(router.pathname)) router.push('/login');
+      } catch (e) {
+        // ignore navigation errors
+      }
     };
     if (typeof window !== 'undefined') {
       window.addEventListener('session-expired', handler as any);
