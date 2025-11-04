@@ -63,6 +63,14 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
             },
             ...prev
           ]);
+          // also show a system notification if permission granted and service worker available
+          try {
+            if (typeof window !== 'undefined' && Notification.permission === 'granted' && 'serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistration().then((reg) => {
+                if (reg) reg.showNotification(n.title || 'Notificación', { body: n.body || n.payload?.body || 'Tienes una nueva notificación', data: n, icon: '/icons/icon-192.svg' });
+              }).catch(() => {});
+            }
+          } catch (e) {}
         });
         socket.on('messagesRead', (p: any) => {
           try {
@@ -76,10 +84,51 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     })();
 
+    // register service worker and subscribe to push notifications (if supported)
+    (async function setupPush() {
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+        // avoid prompting repeatedly
+        if (Notification.permission === 'denied') return;
+
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        // ask permission if not yet granted
+        if (Notification.permission !== 'granted') {
+          const p = await Notification.requestPermission();
+          if (p !== 'granted') return;
+        }
+
+        const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+        if (!vapidKey) return;
+
+        const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidKey) });
+        // send subscription to backend
+        await api.post('/api/push/subscribe', sub);
+      } catch (e) {
+        // ignore push errors
+      }
+    })();
+
     return () => {
       if (socket) socket.disconnect();
     };
   }, []);
+
+  // small helper: convert base64 URL to Uint8Array
+  function urlBase64ToUint8Array(base64String: any) {
+    try {
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    } catch (e) {
+      return new Uint8Array();
+    }
+  }
 
   const markAsRead = async (id: number) => {
     try {
