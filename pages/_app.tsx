@@ -34,6 +34,7 @@ function Header() {
   const [theme, setTheme] = useState<string>('dark');
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23e5e7eb'/><text x='50' y='55' font-size='40' text-anchor='middle' fill='%239ca3af'>?</text></svg>";
 
@@ -124,10 +125,13 @@ function Header() {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setShowThemeMenu(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        setShowMobileMenu(false);
+      }
     }
-    if (showThemeMenu) document.addEventListener('click', onDocClick);
+    if (showThemeMenu || showMobileMenu) document.addEventListener('click', onDocClick);
     return () => document.removeEventListener('click', onDocClick);
-  }, [showThemeMenu]);
+  }, [showThemeMenu, showMobileMenu]);
 
   return (
     <header className="site-header">
@@ -181,13 +185,13 @@ function Header() {
             )}
           </button>
 
-          {showThemeMenu && (
-            <div className="theme-menu" role="menu" aria-label="Opciones de tema">
-              <button role="menuitem" onClick={() => applyChoice('light')} className="theme-menu-item">Light</button>
-              <button role="menuitem" onClick={() => applyChoice('dark')} className="theme-menu-item">Dark</button>
-              <button role="menuitem" onClick={() => applyChoice('system')} className="theme-menu-item">System</button>
-            </div>
-          )}
+            {showThemeMenu && (
+              <div ref={menuRef} className="theme-menu" role="menu" aria-label="Opciones de tema">
+                <button role="menuitem" onClick={() => applyChoice('light')} className="theme-menu-item">Light</button>
+                <button role="menuitem" onClick={() => applyChoice('dark')} className="theme-menu-item">Dark</button>
+                <button role="menuitem" onClick={() => applyChoice('system')} className="theme-menu-item">System</button>
+              </div>
+            )}
         </div>
         <a href="/">Feed</a>
         <a href="/users">Usuarios</a>
@@ -209,7 +213,7 @@ function Header() {
         <NotificationsDropdown />
         {/* Mobile nav overlay */}
         {showMobileMenu && (
-          <nav className="mobile-nav" role="menu" aria-label="Menu principal">
+          <nav ref={mobileMenuRef} className="mobile-nav" role="menu" aria-label="Menu principal">
             <a href="/">Feed</a>
             <a href="/users">Usuarios</a>
             <a href="/messages">Mensajes</a>
