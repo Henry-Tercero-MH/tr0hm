@@ -9,7 +9,10 @@ export default class MyDocument extends Document {
 
     return (
       <Html>
-        <Head />
+        <Head>
+          {/* Ensure proper mobile scaling */}
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
         <body>
           <script dangerouslySetInnerHTML={{ __html: setThemeScript }} />
           <Main />
