@@ -133,6 +133,18 @@ function Header() {
     return () => document.removeEventListener('click', onDocClick);
   }, [showThemeMenu, showMobileMenu]);
 
+  // prevent background scroll when mobile menu is open
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const prev = document.body.style.overflow;
+    if (showMobileMenu) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = prev || '';
+    }
+    return () => { document.body.style.overflow = prev || ''; };
+  }, [showMobileMenu]);
+
   return (
     <header className="site-header">
       <div className="brand">
@@ -213,18 +225,23 @@ function Header() {
         <NotificationsDropdown />
         {/* Mobile nav overlay */}
         {showMobileMenu && (
-          <nav ref={mobileMenuRef} className="mobile-nav" role="menu" aria-label="Menu principal">
-            <a href="/">Feed</a>
-            <a href="/users">Usuarios</a>
-            <a href="/messages">Mensajes</a>
-            {!user && <a href="/login">Login</a>}
-            {user && (
-              <>
-                <a href={`/users/${user.id}`}>Mi perfil</a>
-                <button className="btn btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
-              </>
-            )}
-          </nav>
+          <div className="mobile-drawer" role="dialog" aria-modal="true">
+            <div className="mobile-drawer-backdrop" onClick={() => setShowMobileMenu(false)} />
+            <div ref={mobileMenuRef} className="mobile-drawer-panel">
+              <nav className="mobile-nav" role="menu" aria-label="Menu principal">
+                <a href="/">Feed</a>
+                <a href="/users">Usuarios</a>
+                <a href="/messages">Mensajes</a>
+                {!user && <a href="/login">Login</a>}
+                {user && (
+                  <>
+                    <a href={`/users/${user.id}`}>Mi perfil</a>
+                    <button className="btn btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
+                  </>
+                )}
+              </nav>
+            </div>
+          </div>
         )}
       </div>
     </header>

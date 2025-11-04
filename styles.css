@@ -217,6 +217,18 @@ textarea{ min-height:100px; resize:vertical; }
   .nav-links > a, .nav-links > .theme-toggle, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted, .nav-links > .brand { display: none; }
 }
 
+/* Fullscreen mobile drawer (backdrop + sliding panel) */
+.mobile-drawer{
+  position: fixed; inset: 0; z-index: 120; display:flex; align-items:flex-start; justify-content:flex-end; pointer-events:auto;
+}
+.mobile-drawer-backdrop{ position: absolute; inset: 0; background: rgba(0,0,0,0.45); }
+.mobile-drawer-panel{ position: relative; width: 280px; max-width: 100%; height: 100vh; background: var(--card); box-shadow: -12px 0 40px rgba(0,0,0,0.6); padding: 18px; display:flex; flex-direction:column; gap:12px; overflow:auto; }
+.mobile-drawer .mobile-nav a{ color:var(--text); padding:10px 8px; border-radius:8px; }
+
+@media (min-width:721px){
+  .mobile-drawer, .mobile-drawer-panel, .mobile-drawer-backdrop { display:none !important; }
+}
+
 /* Ensure main and header adapt to small/mobile viewports and don't stay fixed width */
 @media (max-width:900px){
   main { max-width: none; width: calc(100% - 24px); margin: 12px auto; box-sizing: border-box; }
