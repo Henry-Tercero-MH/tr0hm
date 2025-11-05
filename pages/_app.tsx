@@ -183,24 +183,64 @@ function Header() {
       <div className="nav-links d-flex align-items-center">
         {/* Hamburger for small screens */}
         <div style={{ position: 'relative' }} ref={mobileWrapperRef}>
-        <button
-          ref={hamburgerRef}
-          className="hamburger d-md-none"
-          aria-label={showMobileMenu ? 'Cerrar menú' : 'Abrir menú'}
-          onClick={() => setShowMobileMenu((s) => !s)}
-          aria-expanded={showMobileMenu}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            {showMobileMenu ? (
-              <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            ) : (
-              <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            )}
-          </svg>
-        </button>
-      
-  <div style={{ position: 'relative' }} ref={themeWrapperRef} className="ms-2 me-3">
-        <button ref={themeButtonRef} aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
+          <button
+            ref={hamburgerRef}
+            className="hamburger d-md-none"
+            aria-label={showMobileMenu ? 'Cerrar menú' : 'Abrir menú'}
+            onClick={() => setShowMobileMenu((s) => !s)}
+            aria-expanded={showMobileMenu}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              {showMobileMenu ? (
+                <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              ) : (
+                <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+            </svg>
+          </button>
+
+          {/* Mobile dropdown anchored to the hamburger (non-fullscreen) */}
+          {showMobileMenu && (
+            <div className="mobile-menu-container">
+              <div className="theme-menu mobile-menu" ref={mobileMenuRef} role="menu" aria-label="Menu principal">
+                <Link href="/" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Feed</span>
+                </Link>
+                <Link href="/users" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20a8 8 0 0116 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Usuarios</span>
+                </Link>
+                <Link href="/messages" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Mensajes</span>
+                </Link>
+                <div className="mobile-divider" />
+                {!user && (
+                  <Link href="/login" className="mobile-item mobile-cta" onClick={() => setShowMobileMenu(false)}>Login</Link>
+                )}
+                {user && (
+                  <>
+                    <Link href={`/users/${user.id}`} className="mobile-item" onClick={() => setShowMobileMenu(false)}>Mi perfil</Link>
+                    <button className="mobile-item mobile-logout btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
+                  </>
+                )}
+
+                {/* Theme choices are available via the theme-toggle button in the header (kept outside the mobile menu) */}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Theme toggle (kept outside the hamburger so it's always visible on desktop) */}
+        <div style={{ position: 'relative' }} ref={themeWrapperRef} className="ms-2 me-3">
+          <button ref={themeButtonRef} aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
             {theme === 'dark' ? (
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                 <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor" />
@@ -213,22 +253,23 @@ function Header() {
             )}
           </button>
 
-            {showThemeMenu && (
-              <div ref={themeMenuRef} className="theme-menu" role="menu" aria-label="Opciones de tema">
-                <button role="menuitem" onClick={() => applyChoice('light')} className="theme-menu-item">Light</button>
-                <button role="menuitem" onClick={() => applyChoice('dark')} className="theme-menu-item">Dark</button>
-                <button role="menuitem" onClick={() => applyChoice('system')} className="theme-menu-item">System</button>
-              </div>
-            )}
+          {showThemeMenu && (
+            <div ref={themeMenuRef} className="theme-menu" role="menu" aria-label="Opciones de tema">
+              <button role="menuitem" onClick={() => applyChoice('light')} className="theme-menu-item">Light</button>
+              <button role="menuitem" onClick={() => applyChoice('dark')} className="theme-menu-item">Dark</button>
+              <button role="menuitem" onClick={() => applyChoice('system')} className="theme-menu-item">System</button>
+            </div>
+          )}
         </div>
+
         <div className="nav-inline d-none d-md-flex">
-              <Link href="/" className="nav-link" onClick={() => setShowMobileMenu(false)}>Feed</Link>
-              <Link href="/users" className="nav-link" onClick={() => setShowMobileMenu(false)}>Usuarios</Link>
-              <Link href="/messages" className="nav-link" onClick={() => setShowMobileMenu(false)}>Mensajes</Link>
-              {!user && <Link href="/login" className="nav-link" onClick={() => setShowMobileMenu(false)}>Login</Link>}
-              {user && (
-                <>
-                  <Link href={`/users/${user.id}`} className="nav-link d-flex align-items-center" onClick={() => setShowMobileMenu(false)}>
+          <Link href="/" className="nav-link" onClick={() => setShowMobileMenu(false)}>Feed</Link>
+          <Link href="/users" className="nav-link" onClick={() => setShowMobileMenu(false)}>Usuarios</Link>
+          <Link href="/messages" className="nav-link" onClick={() => setShowMobileMenu(false)}>Mensajes</Link>
+          {!user && <Link href="/login" className="nav-link" onClick={() => setShowMobileMenu(false)}>Login</Link>}
+          {user && (
+            <>
+              <Link href={`/users/${user.id}`} className="nav-link d-flex align-items-center" onClick={() => setShowMobileMenu(false)}>
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }} alt={`${user.username} avatar`} className="avatar" style={{ width: 28, height: 28, objectFit: 'cover' }} />
                 ) : (
@@ -240,46 +281,9 @@ function Header() {
             </>
           )}
         </div>
+
         <div className="nav-notifications">
           <NotificationsDropdown />
-        </div>
-        {/* Mobile dropdown anchored to the hamburger (non-fullscreen) */}
-        {showMobileMenu && (
-          <div className="mobile-menu-container"> 
-            <div className="theme-menu mobile-menu" ref={mobileMenuRef} role="menu" aria-label="Menu principal">
-              <Link href="/" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>Feed</span>
-              </Link>
-              <Link href="/users" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20a8 8 0 0116 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>Usuarios</span>
-              </Link>
-              <Link href="/messages" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>Mensajes</span>
-              </Link>
-              <div className="mobile-divider" />
-              {!user && (
-                <Link href="/login" className="mobile-item mobile-cta" onClick={() => setShowMobileMenu(false)}>Login</Link>
-              )}
-              {user && (
-                <>
-                  <Link href={`/users/${user.id}`} className="mobile-item" onClick={() => setShowMobileMenu(false)}>Mi perfil</Link>
-                  <button className="mobile-item mobile-logout btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
-                </>
-              )}
-
-              {/* Theme choices are available via the theme-toggle button in the header (kept outside the mobile menu) */}
-            </div>
-          </div>
-        )}
         </div>
       </div>
     </header>
