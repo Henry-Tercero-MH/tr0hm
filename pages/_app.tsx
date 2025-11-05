@@ -237,16 +237,34 @@ function Header() {
         <NotificationsDropdown />
         {/* Mobile dropdown anchored to the hamburger (non-fullscreen) */}
         {showMobileMenu && (
-          <div style={{ position: 'absolute', top: '100%', right: 0 }}>
+          <div style={{ position: 'absolute', top: '100%', right: 12, left: 12 }}> 
             <div className="theme-menu mobile-menu" ref={mobileMenuRef} role="menu" aria-label="Menu principal">
-              <a href="/" onClick={() => setShowMobileMenu(false)}>Feed</a>
-              <a href="/users" onClick={() => setShowMobileMenu(false)}>Usuarios</a>
-              <a href="/messages" onClick={() => setShowMobileMenu(false)}>Mensajes</a>
-              {!user && <a href="/login" onClick={() => setShowMobileMenu(false)}>Login</a>}
+              <a href="/" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Feed</span>
+              </a>
+              <a href="/users" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20a8 8 0 0116 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Usuarios</span>
+              </a>
+              <a href="/messages" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Mensajes</span>
+              </a>
+              <div className="mobile-divider" />
+              {!user && (
+                <a href="/login" className="mobile-item mobile-cta" onClick={() => setShowMobileMenu(false)}>Login</a>
+              )}
               {user && (
                 <>
-                  <a href={`/users/${user.id}`} onClick={() => setShowMobileMenu(false)}>Mi perfil</a>
-                  <button className="btn btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
+                  <a href={`/users/${user.id}`} className="mobile-item" onClick={() => setShowMobileMenu(false)}>Mi perfil</a>
+                  <button className="mobile-item mobile-logout btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
                 </>
               )}
             </div>

@@ -546,6 +546,19 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
 .mobile-menu a{ display:block; padding:10px 8px; color:var(--text); border-radius:8px; text-decoration:none; }
 .mobile-menu a:hover{ background: rgba(0,0,0,0.04); }
 
+/* Mobile item layout: icon + label */
+.mobile-item{ display:flex; align-items:center; gap:10px; padding:12px; border-radius:10px; color:var(--text); text-decoration:none; font-weight:600; }
+.mobile-item svg{ flex: 0 0 18px; opacity: 0.92; }
+.mobile-item span{ flex:1; }
+.mobile-divider{ height:1px; background: rgba(0,0,0,0.06); margin:8px 0; border-radius:2px; }
+.mobile-cta{ background: linear-gradient(90deg,var(--primary),var(--accent)); color: #071023; text-align:center; }
+.mobile-logout{ background: transparent; border: 1px solid rgba(0,0,0,0.06); }
+
+@media (max-width:420px){
+  .mobile-menu{ left: 8px; right: 8px; min-width: auto; }
+  .theme-menu{ right: 8px; left: 8px; }
+}
+
 /* Hide old full-screen drawer (kept for reference) */
 .mobile-drawer, .mobile-drawer-backdrop, .mobile-drawer-panel { display:none !important; }
 
