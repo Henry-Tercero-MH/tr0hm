@@ -372,16 +372,16 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   return (
     <main className="container my-4">
       {/* Stories bar */}
-      <section style={{ marginBottom: 16 }}>
-        <div className="d-flex gap-3 overflow-auto py-2" style={{ paddingLeft: 4, paddingRight: 4 }}>
+      <section className="stories-section">
+        <div className="stories-bar d-flex gap-3 overflow-auto py-2">
           {user && (
-            <div style={{ minWidth: 84 }}>
+            <div className="story-item">
               <div className="story-tile d-flex flex-column align-items-center">
-                {user.avatarUrl ? <img src={user.avatarUrl} className="avatar" style={{ width: 60, height: 60, borderRadius: 999 }} /> : <div className="avatar" style={{ width: 60, height: 60 }} />}
-                <button className="btn btn-ghost" onClick={() => openStoryByIndex(0)} style={{ marginTop: 8 }}>
+                {user.avatarUrl ? <img src={user.avatarUrl} className="story-avatar avatar" /> : <div className="story-avatar avatar" />}
+                <button className="btn btn-ghost mt-2 story-open-btn" onClick={() => openStoryByIndex(0)}>
                   Tu Historia
                 </button>
-                <form onSubmit={submitStory} className="w-100 mt-2">
+                <form onSubmit={submitStory} className="w-100 mt-2 story-create-form">
                   <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
                   <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
                   <div>
@@ -392,11 +392,11 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
             </div>
           )}
           {stories.map((s, idx) => (
-            <div key={s.id} style={{ minWidth: 84, textAlign: 'center' }}>
-              <button className={`story-tile ${s.id < 0 ? 'story-pending' : ''}`} onClick={() => openStoryByIndex(idx)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
-                {s.author?.avatarUrl ? <img src={s.author.avatarUrl} className="avatar" style={{ width: 60, height: 60, borderRadius: 999, boxShadow: '0 0 0 3px rgba(255,255,255,0.6), 0 0 0 6px rgba(0,150,255,0.12)' }} /> : <div className="avatar" style={{ width: 60, height: 60 }} />}
+            <div key={s.id} className="story-item text-center">
+              <button className={`story-btn story-tile ${s.id < 0 ? 'story-pending' : ''}`} onClick={() => openStoryByIndex(idx)} type="button">
+                {s.author?.avatarUrl ? <img src={s.author.avatarUrl} className="story-avatar avatar" /> : <div className="story-avatar avatar" />}
                 {s.id < 0 && <div className="story-pulse" />}
-                <div style={{ fontSize: 12, marginTop: 6 }}><UserBadge user={s.author} size={12} showName={true} /></div>
+                <div className="story-label"><UserBadge user={s.author} size={12} showName={true} /></div>
               </button>
             </div>
           ))}

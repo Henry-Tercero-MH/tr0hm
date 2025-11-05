@@ -276,6 +276,25 @@ textarea{ min-height:100px; resize:vertical; }
 /* Modal story progress bar */
 .story-progress{ height:100%; background: linear-gradient(90deg,var(--primary),var(--accent)); width:0%; transition: width 250ms linear; }
 
+/* Stories responsive layout */
+.stories-bar{ padding: 8px 6px; margin-bottom: 16px; }
+.story-item{ flex: 0 0 auto; width: 92px; text-align: center; min-width: 64px; }
+.story-btn{ background: transparent; border: 0; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; padding: 6px 4px; }
+.story-avatar{ width: 64px; height: 64px; border-radius: 999px; object-fit: cover; display: inline-block; }
+.story-label{ font-size: 12px; margin-top: 6px; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.story-create-form{ margin-top: 8px; }
+
+/* mobile adjustments: smaller avatars and hide creation form to save space */
+@media (max-width:520px){
+  .stories-bar{ gap: 12px; padding-left: 8px; padding-right: 8px; }
+  .story-item{ width: 76px; }
+  .story-avatar{ width: 48px; height: 48px; }
+  .story-label{ font-size: 11px; }
+  .story-create-form{ display: none; }
+  /* reposition pulse relative to avatar */
+  .story-pulse{ position: absolute; top: 6px; right: 12px; margin-top: 0; margin-left: 0; width: 10px; height: 10px; }
+}
+
 /* Modal overlay animation */
 .modal-overlay{ animation: modal-fade 180ms cubic-bezier(.2,.9,.3,1) both; }
 @keyframes modal-fade{ from { opacity:0; transform: translateY(6px) scale(.99); } to { opacity:1; transform: translateY(0) scale(1); } }
