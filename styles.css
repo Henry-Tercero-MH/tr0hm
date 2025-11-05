@@ -59,6 +59,7 @@ header.site-header{
   /* make header text visible on dark background */
   color: var(--text-high);
 }
+.site-header{ flex-wrap: wrap; }
 .brand{
   display:flex;
   align-items:center;
@@ -70,8 +71,8 @@ header.site-header{
   box-shadow: 0 4px 12px rgba(99,102,241,0.18);
 }
 .brand h1{ font-size:18px; margin:0; color:var(--text); }
-.nav-links{ display:flex; gap:12px; align-items:center; }
-.nav-links a{ color:var(--muted); text-decoration:none; padding:6px 8px; border-radius:6px; }
+.nav-links{ display:flex; gap:12px; align-items:center; flex: 1 1 auto; justify-content:flex-end; min-width:0; }
+.nav-links a{ color:var(--muted); text-decoration:none; padding:6px 8px; border-radius:6px; white-space:nowrap; }
 .nav-links a:hover{ background: rgba(255,255,255,0.02); color:var(--text); }
 
 /* Hamburger button - hidden on desktop, visible on small screens */
@@ -214,9 +215,16 @@ textarea{ min-height:100px; resize:vertical; }
 @media (max-width:720px){
   main { margin:12px; padding:12px; }
   header.site-header{ max-width:calc(100% - 24px); margin:12px auto 0; }
-  /* show hamburger, hide inline nav links */
+  /* make header wrap so brand and controls stack nicely */
+  header.site-header{ flex-wrap:wrap; align-items:center; }
+  /* show hamburger */
   .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
-  .nav-links > a, .nav-links > .theme-toggle, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted, .nav-links > .brand { display: none; }
+  /* hide inline textual links and avatar/buttons but keep theme-toggle visible */
+  .nav-links > a, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted { display: none; }
+  .nav-links > .theme-toggle { display: inline-flex; }
+  /* ensure nav-links occupies full width under brand so hamburger sits at right */
+  .nav-links { width: 100%; box-sizing: border-box; padding: 6px 8px; }
+  .brand { flex: 0 0 auto; }
 }
 
 /* Fullscreen mobile drawer (backdrop + sliding panel) */
