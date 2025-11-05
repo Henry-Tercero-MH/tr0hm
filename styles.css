@@ -606,11 +606,15 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
 
 /* Desktop / tablet: ensure nav-inline and nav items appear in a single row and don't wrap */
 @media (min-width:721px){
+  /* Desktop / tablet: ensure nav-inline and nav items appear in a single row and don't wrap */
   .nav-inline{ display:flex; gap:12px; align-items:center; overflow:visible; }
-  .nav-inline a, .nav-links > a, .nav-links > .muted, .nav-links > .avatar, .nav-links > .btn{ display: inline-flex !important; }
-  header.site-header{ flex-wrap: nowrap; }
-  /* ensure theme-toggle sits inline as well */
-  .nav-links > .theme-toggle { display: inline-flex; }
+  /* ensure all navigation controls (wherever nested) are visible inline */
+  .nav-links{ flex-wrap: nowrap; align-items: center; }
+  .nav-links .theme-toggle { display: inline-flex; }
+  .nav-links .nav-notifications { display: inline-flex; }
+  .nav-links .avatar, .nav-links .btn, .nav-links .muted, .nav-links a{ display: inline-flex !important; }
+  /* hide hamburger on desktop */
+  .hamburger{ display:none; }
 }
 
 /* Hide old full-screen drawer (kept for reference) */
