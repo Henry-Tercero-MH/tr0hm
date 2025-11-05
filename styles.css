@@ -615,6 +615,13 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
   .nav-links .avatar, .nav-links .btn, .nav-links .muted, .nav-links a{ display: inline-flex !important; }
   /* hide hamburger on desktop */
   .hamburger{ display:none; }
+  /* keep brand compact and pinned left so nav controls can share one row */
+  .brand{ flex: 0 0 auto; }
+  .nav-links{ flex: 1 1 auto; justify-content: flex-end; }
+  /* ensure username doesn't wrap and instead truncates with ellipsis */
+  .nav-links .muted{ max-width: 160px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* small spacing tweak so notifications sit inline nicely */
+  .nav-notifications{ margin-left: 8px; margin-right: 6px; }
 }
 
 /* Hide old full-screen drawer (kept for reference) */
