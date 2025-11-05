@@ -35,6 +35,7 @@ function Header() {
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const hamburgerRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23e5e7eb'/><text x='50' y='55' font-size='40' text-anchor='middle' fill='%239ca3af'>?</text></svg>";
 
@@ -122,10 +123,13 @@ function Header() {
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      // ignore clicks on the hamburger itself to avoid opening then immediately closing
+      if (hamburgerRef.current && hamburgerRef.current.contains(target)) return;
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setShowThemeMenu(false);
       }
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
         setShowMobileMenu(false);
       }
     }
@@ -170,6 +174,7 @@ function Header() {
       <div className="nav-links">
         {/* Hamburger for small screens */}
         <button
+          ref={hamburgerRef}
           className="hamburger"
           aria-label={showMobileMenu ? 'Cerrar menú' : 'Abrir menú'}
           onClick={() => setShowMobileMenu((s) => !s)}

@@ -103,6 +103,8 @@ header.site-header{
   z-index: 60;
   min-width: 180px;
 }
+.mobile-nav a{ display:block; color:var(--text) !important; }
+.mobile-nav .btn{ width:100%; }
 .mobile-nav a{ color:var(--text); padding:8px; border-radius:8px; text-decoration:none; }
 .mobile-nav .btn{ width:100%; }
 
