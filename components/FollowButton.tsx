@@ -72,20 +72,24 @@ export default function FollowButton({ userId, compact = false }: { userId: numb
   if (user.id === userId) return null;
 
   if (status === 'none') {
-    return <button className={`btn ${compact ? 'btn-sm' : ''} btn-primary`} onClick={sendRequest} disabled={loading}>Solicitar</button>;
+    return (
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-primary`} onClick={sendRequest} disabled={loading}>
+        Solicitar
+      </button>
+    );
   }
   if (status === 'requested') {
     return (
-      <div style={{ display: 'inline-flex', gap: 8 }}>
-        <button className={`btn ${compact ? 'btn-sm' : ''} btn-ghost`} disabled>Enviado</button>
-        <button className={`btn ${compact ? 'btn-sm' : ''} btn-tertiary`} onClick={cancelRequest} disabled={loading}>Cancelar</button>
+      <div className={`d-inline-flex align-items-center ${compact ? '' : 'gap-2'}`}>
+        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-primary`} disabled>Enviado</button>
+        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-secondary`} onClick={cancelRequest} disabled={loading}>Cancelar</button>
       </div>
     );
   }
   return (
-    <div style={{ display: 'inline-flex', gap: 8 }}>
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-ghost`} disabled>Siguiendo</button>
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-tertiary`} onClick={unfollow} disabled={loading}>Dejar de seguir</button>
+    <div className={`d-inline-flex align-items-center ${compact ? '' : 'gap-2'}`}>
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-success`} disabled>Siguiendo</button>
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-danger`} onClick={unfollow} disabled={loading}>Dejar de seguir</button>
     </div>
   );
 }

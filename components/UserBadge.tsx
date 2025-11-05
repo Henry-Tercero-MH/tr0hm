@@ -23,8 +23,8 @@ export default function UserBadge({ user, size = 28, link = false, showName = tr
       src={avatar || PLACEHOLDER}
       onError={(e) => { (e.currentTarget as HTMLImageElement).onerror = null; e.currentTarget.src = PLACEHOLDER; }}
       alt={`${name} avatar`}
-      style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }}
-      className={`user-badge-avatar ${className}`}
+      style={{ width: size, height: size, objectFit: 'cover' }}
+      className={`rounded-circle user-badge-avatar ${className}`}
     />
   );
 
@@ -37,12 +37,16 @@ export default function UserBadge({ user, size = 28, link = false, showName = tr
   const avatarNode = avatar ? img : initials;
 
   const content = (
-    <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+    <div className="d-inline-flex align-items-center" style={{ gap: 8 }}>
       {avatarNode}
-      {showName ? <strong style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</strong> : null}
+      {showName ? (
+        <div style={{ maxWidth: 160 }} className="text-truncate">
+          <strong className="me-1">{name}</strong>
+        </div>
+      ) : null}
       {/* follow/request button: only show when viewing other users */}
       {user && me && user.id && me.id !== user.id && (
-        <div style={{ marginLeft: 8 }}>
+        <div className="ms-2">
           <FollowButton userId={user.id as number} compact />
         </div>
       )}
