@@ -177,12 +177,12 @@ function Header() {
   <h1>Tr0hm</h1>
       </div>
 
-      <div className="nav-links">
+      <div className="nav-links d-flex align-items-center">
         {/* Hamburger for small screens */}
         <div style={{ position: 'relative' }} ref={mobileWrapperRef}>
         <button
           ref={hamburgerRef}
-          className="hamburger"
+          className="hamburger d-md-none"
           aria-label={showMobileMenu ? 'Cerrar menú' : 'Abrir menú'}
           onClick={() => setShowMobileMenu((s) => !s)}
           aria-expanded={showMobileMenu}
@@ -195,7 +195,8 @@ function Header() {
             )}
           </svg>
         </button>
-      <div style={{ position: 'relative' }} ref={themeWrapperRef}>
+      
+  <div style={{ position: 'relative' }} ref={themeWrapperRef} className="ms-2 me-3">
         <button ref={themeButtonRef} aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
             {theme === 'dark' ? (
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -217,7 +218,7 @@ function Header() {
               </div>
             )}
         </div>
-        <div className="nav-inline">
+        <div className="nav-inline d-none d-md-flex">
           <a href="/">Feed</a>
           <a href="/users">Usuarios</a>
           <a href="/messages">Mensajes</a>
@@ -291,6 +292,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             <title>Tr0hm</title>
             <meta name="description" content="Tr0hm — Comunidad" />
             <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+            {/* Bootstrap CSS from CDN to leverage responsive utilities quickly */}
+            <link
+              rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              integrity="sha384-3gYQm8B6g3q7zqKq7L1dQ6QzQw5q5nq1Kq5q1Kq6q5q1Kq6q5q1Kq6q5q1Kq6q5q"
+              crossOrigin="anonymous"
+            />
           </Head>
           <Header />
           <Component {...pageProps} />

@@ -83,6 +83,8 @@ header.site-header{
 .nav-inline{ display:flex; gap:12px; align-items:center; min-width:0; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .nav-inline a{ white-space:nowrap; }
 .nav-inline::-webkit-scrollbar{ display:none; }
+/* Use bootstrap-compatible utility: allow nav-inline to scroll gently when narrow */
+.nav-inline{ padding-bottom:2px; }
 
 /* Hamburger button - hidden on desktop, visible on small screens */
 .hamburger{
