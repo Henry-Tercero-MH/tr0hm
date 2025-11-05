@@ -71,7 +71,7 @@ export default function NotificationsDropdown() {
   }
 
   return (
-    <div className="position-relative" style={{ marginLeft: 12 }}>
+    <div className="position-relative ms-2">
       <button className="btn btn-ghost" onClick={() => setOpen(!open)} aria-label="Notifications">
         🔔 {unreadCount > 0 ? `(${unreadCount})` : ''}
       </button>
@@ -80,7 +80,7 @@ export default function NotificationsDropdown() {
           <div className="notifications-dropdown card">
             <div className="p-2 border-bottom"><strong>Notificaciones</strong></div>
             <div style={{ maxHeight: 320, overflow: 'auto' }}>
-              {notifications.length === 0 && <div style={{ padding: 12 }}>No hay notificaciones</div>}
+              {notifications.length === 0 && <div className="p-3">No hay notificaciones</div>}
               {notifications.map((n) => {
                 const payload = n.payload || {};
                 const actorId = payload.from || payload.userId || null;
@@ -104,22 +104,22 @@ export default function NotificationsDropdown() {
                 }
 
                 return (
-                  <button key={n.id} className={`notification ${!n.read ? 'unread' : ''} dropdown-item`} onClick={() => handleClick(n)} style={{ width: '100%', textAlign: 'left', display: 'flex', gap: 12, padding: 10, alignItems: 'center' }}>
-                    <div style={{ width: 44, height: 44, flex: '0 0 44px' }}>
+                  <button key={n.id} className={`notification ${!n.read ? 'unread' : ''} dropdown-item d-flex align-items-center w-100 text-start p-2`} onClick={() => handleClick(n)}>
+                    <div className="flex-shrink-0 me-2" style={{ width: 44, height: 44 }}>
                       {actor ? (
                         <UserBadge user={actor} size={44} showName={false} />
                       ) : (
-                        <div className="avatar-neon" style={{ width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{(actorId ? String(actorId).slice(0,1) : 'N')}</div>
+                        <div className="avatar-neon d-flex align-items-center justify-content-center" style={{ width: 44, height: 44, fontWeight: 700 }}>{(actorId ? String(actorId).slice(0,1) : 'N')}</div>
                       )}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>{title}</div>
-                        <div className="time" style={{ flex: '0 0 auto' }}>{formatStable(n.createdAt)}</div>
+                    <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                      <div className="d-flex justify-content-between align-items-start" style={{ gap: 8 }}>
+                        <div className="text-truncate fw-semibold">{title}</div>
+                        <div className="time ms-2 text-muted small" style={{ flex: '0 0 auto' }}>{formatStable(n.createdAt)}</div>
                       </div>
-                      {subtitle ? <div className="muted" style={{ marginTop: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{subtitle}</div> : null}
+                      {subtitle ? <div className="muted small mt-1 text-truncate">{subtitle}</div> : null}
                     </div>
-                    <div style={{ marginLeft: 8, alignSelf: 'center' }}>{!n.read && <span className="badge-unread" />}</div>
+                    <div className="ms-2 align-self-center">{!n.read && <span className="badge-unread" />}</div>
                   </button>
                 );
               })}
