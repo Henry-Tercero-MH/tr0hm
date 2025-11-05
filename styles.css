@@ -29,6 +29,8 @@ button { padding: 8px 12px; margin-top: 8px; }
 [data-theme="light"]{
   --bg: #f7fbff;
   --card: #ffffff;
+  /* solid card background for components that need opaque background */
+  --card-solid: #ffffff;
   --muted-high: #6b7280;
   --text-high: #0f1724;
   /* map common tokens so other rules using --text/--muted still work */
@@ -298,6 +300,8 @@ textarea{ min-height:100px; resize:vertical; }
 [data-theme="dark"]{
   --bg: linear-gradient(180deg, rgba(5,3,6,0.96), rgba(11,9,15,0.94));
   --card: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  /* solid card background for panels that must be opaque on dark theme */
+  --card-solid: #0b0a0f;
   --text: var(--text-high);
   --muted: var(--muted-high);
   --primary: var(--neon-orange);
@@ -558,7 +562,8 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
   min-width: 180px;
   padding: 10px;
   border-radius: 10px;
-  background: var(--card);
+  /* use a solid background to ensure menu options are readable */
+  background: var(--card-solid);
   border: 1px solid var(--glass-border, rgba(0,0,0,0.06));
   box-shadow: 0 10px 42px rgba(0,0,0,0.6);
 }
@@ -597,6 +602,15 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
     max-width: calc(100% - 24px);
     box-sizing: border-box;
   }
+}
+
+/* Desktop / tablet: ensure nav-inline and nav items appear in a single row and don't wrap */
+@media (min-width:721px){
+  .nav-inline{ display:flex; gap:12px; align-items:center; overflow:visible; }
+  .nav-inline a, .nav-links > a, .nav-links > .muted, .nav-links > .avatar, .nav-links > .btn{ display: inline-flex !important; }
+  header.site-header{ flex-wrap: nowrap; }
+  /* ensure theme-toggle sits inline as well */
+  .nav-links > .theme-toggle { display: inline-flex; }
 }
 
 /* Hide old full-screen drawer (kept for reference) */
