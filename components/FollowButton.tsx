@@ -71,25 +71,70 @@ export default function FollowButton({ userId, compact = false }: { userId: numb
   if (!user) return null;
   if (user.id === userId) return null;
 
+  // Inline SVG icons for small buttons — keep accessible labels via visually-hidden
+  const IconPersonPlus = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M15 14c2.761 0 5 2.239 5 5v1H4v-1c0-2.761 2.239-5 5-5h6z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 10a4 4 0 108 0 4 4 0 00-8 0z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M19 8v4M21 10h-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+  const IconPaperPlane = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M22 2L11 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+  const IconCheck = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+  const IconPersonX = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6 21v-1c0-2 2.686-3.5 6-3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M18 16l4 4M22 16l-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+
   if (status === 'none') {
     return (
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-primary`} onClick={sendRequest} disabled={loading}>
-        Solicitar
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-primary d-inline-flex align-items-center`} onClick={sendRequest} disabled={loading}>
+        <span aria-hidden className="me-2">{IconPersonPlus}</span>
+        <span className="visually-hidden">Solicitar</span>
+        {!compact && <span>Solicitar</span>}
       </button>
     );
   }
   if (status === 'requested') {
     return (
       <div className={`d-inline-flex align-items-center ${compact ? '' : 'gap-2'}`}>
-        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-primary`} disabled>Enviado</button>
-        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-secondary`} onClick={cancelRequest} disabled={loading}>Cancelar</button>
+        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-primary d-inline-flex align-items-center`} disabled aria-label="Solicitud enviada">
+          <span aria-hidden className="me-1">{IconPaperPlane}</span>
+          <span className="visually-hidden">Enviado</span>
+          {!compact && <span>Enviado</span>}
+        </button>
+        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-secondary d-inline-flex align-items-center`} onClick={cancelRequest} disabled={loading} aria-label="Cancelar solicitud">
+          <span aria-hidden className="me-1">✖</span>
+          <span className="visually-hidden">Cancelar</span>
+          {!compact && <span>Cancelar</span>}
+        </button>
       </div>
     );
   }
   return (
     <div className={`d-inline-flex align-items-center ${compact ? '' : 'gap-2'}`}>
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-success`} disabled>Siguiendo</button>
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-danger`} onClick={unfollow} disabled={loading}>Dejar de seguir</button>
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-success d-inline-flex align-items-center`} disabled aria-label="Siguiendo">
+        <span aria-hidden className="me-1">{IconCheck}</span>
+        <span className="visually-hidden">Siguiendo</span>
+        {!compact && <span>Siguiendo</span>}
+      </button>
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-danger d-inline-flex align-items-center`} onClick={unfollow} disabled={loading} aria-label="Dejar de seguir">
+        <span aria-hidden className="me-1">{IconPersonX}</span>
+        <span className="visually-hidden">Dejar de seguir</span>
+        {!compact && <span>Dejar de seguir</span>}
+      </button>
     </div>
   );
 }

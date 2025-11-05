@@ -10,5 +10,6 @@ export function formatStable(dateStr: string) {
   const hh = String(d.getUTCHours()).padStart(2, '0');
   const min = String(d.getUTCMinutes()).padStart(2, '0');
   const ss = String(d.getUTCSeconds()).padStart(2, '0');
-  return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss} UTC`;
+  // keep a stable UTC-based representation for SSR but avoid showing the literal 'UTC'
+  return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
 }
