@@ -270,13 +270,7 @@ function Header() {
                 </>
               )}
 
-              {/* Theme choices inside mobile menu */}
-              <div className="mobile-divider" />
-              <div style={{ display: 'flex', gap: 8, paddingTop: 6 }}>
-                <button className="btn btn-ghost" onClick={() => { applyChoice('light'); setShowMobileMenu(false); }}>Light</button>
-                <button className="btn btn-ghost" onClick={() => { applyChoice('dark'); setShowMobileMenu(false); }}>Dark</button>
-                <button className="btn btn-ghost" onClick={() => { applyChoice('system'); setShowMobileMenu(false); }}>System</button>
-              </div>
+              {/* Theme choices are available via the theme-toggle button in the header (kept outside the mobile menu) */}
             </div>
           </div>
         )}

@@ -221,8 +221,9 @@ textarea{ min-height:100px; resize:vertical; }
   .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
   /* hide inline textual links and avatar/buttons; keep only hamburger visible on mobile */
   .nav-links > a, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted { display: none; }
-  /* hide theme-toggle and notifications icon on mobile to use a single menu button */
-  .nav-links > .theme-toggle { display: none; }
+  /* keep theme-toggle visible on mobile (user requested it stays outside the hamburger) */
+  .nav-links > .theme-toggle { display: inline-flex; }
+  /* keep notifications hidden on mobile to avoid crowding (optional) */
   .nav-notifications { display: none; }
   /* ensure nav-links occupies full width under brand so hamburger sits at right */
   .nav-links { width: 100%; box-sizing: border-box; padding: 6px 8px; }
