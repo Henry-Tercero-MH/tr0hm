@@ -228,6 +228,16 @@ function Header() {
           <div className="mobile-drawer" role="dialog" aria-modal="true">
             <div className="mobile-drawer-backdrop" onClick={() => setShowMobileMenu(false)} />
             <div ref={mobileMenuRef} className="mobile-drawer-panel">
+              {/* Theme choices for mobile */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ fontSize: 14, fontWeight: 700 }}>Tema</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="btn btn-ghost" onClick={() => { applyChoice('light'); setShowMobileMenu(false); }}>Light</button>
+                  <button className="btn btn-ghost" onClick={() => { applyChoice('dark'); setShowMobileMenu(false); }}>Dark</button>
+                  <button className="btn btn-ghost" onClick={() => { applyChoice('system'); setShowMobileMenu(false); }}>System</button>
+                </div>
+              </div>
+
               <nav className="mobile-nav" role="menu" aria-label="Menu principal">
                 <a href="/">Feed</a>
                 <a href="/users">Usuarios</a>
