@@ -71,14 +71,14 @@ export default function NotificationsDropdown() {
   }
 
   return (
-    <div style={{ position: 'relative', marginLeft: 12 }}>
+    <div className="position-relative" style={{ marginLeft: 12 }}>
       <button className="btn btn-ghost" onClick={() => setOpen(!open)} aria-label="Notifications">
         🔔 {unreadCount > 0 ? `(${unreadCount})` : ''}
       </button>
       {open && (
-        <div style={{ position: 'absolute', right: 0, top: '100%', zIndex: 40 }}>
+        <div className="dropdown-menu show dropdown-menu-end p-0" style={{ zIndex: 40 }}>
           <div className="notifications-dropdown card">
-            <div style={{ padding: 8, borderBottom: '1px solid #eee' }}><strong>Notificaciones</strong></div>
+            <div className="p-2 border-bottom"><strong>Notificaciones</strong></div>
             <div style={{ maxHeight: 320, overflow: 'auto' }}>
               {notifications.length === 0 && <div style={{ padding: 12 }}>No hay notificaciones</div>}
               {notifications.map((n) => {
@@ -104,7 +104,7 @@ export default function NotificationsDropdown() {
                 }
 
                 return (
-                  <button key={n.id} className={`notification ${!n.read ? 'unread' : ''}`} onClick={() => handleClick(n)} style={{ width: '100%', textAlign: 'left', display: 'flex', gap: 12, padding: 10, alignItems: 'center' }}>
+                  <button key={n.id} className={`notification ${!n.read ? 'unread' : ''} dropdown-item`} onClick={() => handleClick(n)} style={{ width: '100%', textAlign: 'left', display: 'flex', gap: 12, padding: 10, alignItems: 'center' }}>
                     <div style={{ width: 44, height: 44, flex: '0 0 44px' }}>
                       {actor ? (
                         <UserBadge user={actor} size={44} showName={false} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 
 const PASSWORD_RULES = [
@@ -66,48 +67,48 @@ export default function Register() {
   const strengthLabel = strength < 40 ? 'Débil' : strength < 80 ? 'Media' : 'Fuerte';
 
   return (
-    <main>
-      <div className="card register-shell">
+    <main className="container my-4">
+      <div className="card register-shell p-4">
         <h2>Crear cuenta</h2>
-        {error && <div className="muted" style={{ color: 'var(--danger)', marginBottom: 8 }}>{error}</div>}
+        {error && <div className="text-danger mb-2">{error}</div>}
         <form onSubmit={submit} className="register-form">
-          <div className="form-row">
-            <label>Usuario</label>
-            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username"
+          <div className="mb-3">
+            <label className="form-label">Usuario</label>
+            <input className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username"
               onBlur={() => setTouched((s) => ({ ...s, username: true }))}
               aria-invalid={touched.username && username.trim().length < 3}
             />
             {touched.username && username.trim().length < 3 && (
-              <div className="muted" style={{ color: 'var(--danger)', fontSize: 13 }}>El usuario debe tener al menos 3 caracteres</div>
+              <div className="text-danger small">El usuario debe tener al menos 3 caracteres</div>
             )}
           </div>
 
-          <div className="form-row">
-            <label>Email</label>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email"
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email"
               onBlur={() => setTouched((s) => ({ ...s, email: true }))}
               aria-invalid={touched.email && !/@/.test(email)}
             />
             {touched.email && !/@/.test(email) && (
-              <div className="muted" style={{ color: 'var(--danger)', fontSize: 13 }}>Introduce un email válido</div>
+              <div className="text-danger small">Introduce un email válido</div>
             )}
           </div>
 
-          <div className="form-row">
-            <label>Contraseña</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password"
+          <div className="mb-3">
+            <label className="form-label">Contraseña</label>
+            <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password"
               onBlur={() => setTouched((s) => ({ ...s, password: true }))}
               aria-invalid={touched.password && !allValid()}
             />
 
-            <div className="password-strength-wrapper">
+            <div className="password-strength-wrapper mt-2">
               <div className="password-strength" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
                 <div className={`fill ${strength < 40 ? 'low' : strength < 80 ? 'mid' : 'high'}`} style={{ width: `${strength}%` }} />
               </div>
               <div className="strength-label">Seguridad: {strengthLabel}</div>
             </div>
 
-            <div className="password-criteria" aria-live="polite">
+            <div className="password-criteria mt-2" aria-live="polite">
               {PASSWORD_RULES.map((r) => (
                 <div key={r.key} className={`criteria ${validity[r.key] ? 'met' : 'unmet'}`}>
                   <span className="icon" aria-hidden>
@@ -127,15 +128,15 @@ export default function Register() {
               ))}
             </div>
             {touched.password && !allValid() && (
-              <div className="muted" style={{ color: 'var(--muted)', fontSize: 13, marginTop: 6 }}>
+              <div className="text-muted small mt-1">
                 La contraseña debe cumplir todas las condiciones anteriores.
               </div>
             )}
           </div>
 
-          <div className="form-actions">
+          <div className="d-flex gap-2 align-items-center">
             <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Creando...' : 'Crear cuenta'}</button>
-            <a className="btn btn-ghost" href="/login" style={{ alignSelf: 'center' }}>Volver a login</a>
+            <Link href="/login" className="btn btn-ghost">Volver a login</Link>
           </div>
         </form>
       </div>

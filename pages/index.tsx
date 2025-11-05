@@ -370,22 +370,22 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   useEffect(() => { setIsClient(true); }, []);
 
   return (
-    <main>
+    <main className="container my-4">
       {/* Stories bar */}
       <section style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', padding: '8px 4px' }}>
+        <div className="d-flex gap-3 overflow-auto py-2" style={{ paddingLeft: 4, paddingRight: 4 }}>
           {user && (
             <div style={{ minWidth: 84 }}>
-              <div className="story-tile" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="story-tile d-flex flex-column align-items-center">
                 {user.avatarUrl ? <img src={user.avatarUrl} className="avatar" style={{ width: 60, height: 60, borderRadius: 999 }} /> : <div className="avatar" style={{ width: 60, height: 60 }} />}
                 <button className="btn btn-ghost" onClick={() => openStoryByIndex(0)} style={{ marginTop: 8 }}>
                   Tu Historia
                 </button>
-                <form onSubmit={submitStory} style={{ marginTop: 8 }}>
-                  <input className="input" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
-                  <input className="input" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
-                  <div style={{ marginTop: 6 }}>
-                    <button className="btn btn-primary" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
+                <form onSubmit={submitStory} className="w-100 mt-2">
+                  <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
+                  <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
+                  <div>
+                    <button className="btn btn-primary w-100" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
                   </div>
                 </form>
               </div>
@@ -404,10 +404,10 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
       </section>
       <h1>Feed</h1>
       {user && (
-        <div className="card">
+        <div className="card p-3">
           <form onSubmit={submitPost}>
-            <textarea value={newPostText} onChange={(e) => setNewPostText(e.target.value)} placeholder="¿Qué estás pensando?" />
-            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <textarea className="form-control" value={newPostText} onChange={(e) => setNewPostText(e.target.value)} placeholder="¿Qué estás pensando?" />
+            <div className="d-flex gap-2 mt-2">
               <button className="btn btn-primary" type="submit" disabled={creatingPost}>{creatingPost ? 'Publicando...' : 'Publicar'}</button>
             </div>
           </form>
