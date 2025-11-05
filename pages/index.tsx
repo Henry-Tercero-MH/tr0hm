@@ -436,8 +436,10 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
             )}
           </div>
           <div className="post-header">
-            <UserBadge user={p.author} size={44} link showName={true} />
-            <div style={{ marginLeft: 12 }} className="post-meta">{formatStable(p.createdAt)}</div>
+            <div className="d-flex align-items-center" style={{ flex: '1 1 auto', minWidth: 0 }}>
+              <UserBadge user={p.author} size={44} link showName={true} />
+            </div>
+            <div className="post-meta ms-3" style={{ flex: '0 0 auto', whiteSpace: 'nowrap' }}>{formatStable(p.createdAt)}</div>
           </div>
           <div className="post-body">{editingPostId === p.id ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
