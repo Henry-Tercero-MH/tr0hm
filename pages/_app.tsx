@@ -241,7 +241,7 @@ function Header() {
         </div>
         {/* Mobile dropdown anchored to the hamburger (non-fullscreen) */}
         {showMobileMenu && (
-          <div style={{ position: 'absolute', top: '100%', right: 12, left: 12 }}> 
+          <div className="mobile-menu-container"> 
             <div className="theme-menu mobile-menu" ref={mobileMenuRef} role="menu" aria-label="Menu principal">
               <a href="/" className="mobile-item" onClick={() => setShowMobileMenu(false)}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>

@@ -578,6 +578,27 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
   .theme-menu{ right: 8px; left: 8px; }
 }
 
+/* Mobile menu container: fixed to viewport to avoid expanding document width when opened.
+   pointer-events on container are disabled so clicks pass through to the panel itself
+   (panel has pointer-events enabled). Top is a conservative header height, adjust if header size changes. */
+@media (max-width:720px){
+  .mobile-menu-container{
+    position: fixed;
+    top: 64px; /* adjust if your header is taller */
+    left: 12px;
+    right: 12px;
+    z-index: 100;
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none; /* panel will handle pointer events */
+  }
+  .mobile-menu-container .mobile-menu{
+    pointer-events: auto;
+    max-width: calc(100% - 24px);
+    box-sizing: border-box;
+  }
+}
+
 /* Hide old full-screen drawer (kept for reference) */
 .mobile-drawer, .mobile-drawer-backdrop, .mobile-drawer-panel { display:none !important; }
 
