@@ -519,8 +519,9 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
   position: absolute;
   right: 0;
   top: calc(100% + 8px);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.04);
+  /* solid background (no transparency) to improve readability */
+  background: var(--card);
+  border: 1px solid var(--glass-border, rgba(0,0,0,0.06));
   box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   border-radius: 8px;
   padding: 6px;
@@ -528,10 +529,25 @@ body, main, header.site-header, .card, .post-card, .brand .logo, .btn, .avatar, 
   flex-direction: column;
   gap: 6px;
   min-width: 140px;
-  z-index: 50;
+  z-index: 80;
 }
 .theme-menu-item{ background: transparent; border:0; padding:8px 10px; text-align:left; border-radius:6px; cursor:pointer; color: var(--text-high); }
-.theme-menu-item:hover{ background: rgba(255,255,255,0.02); }
+.theme-menu-item:hover{ background: rgba(0,0,0,0.04); }
+
+/* Mobile menu (dropdown anchored to hamburger) */
+.mobile-menu{
+  min-width: 180px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--glass-border, rgba(0,0,0,0.06));
+  box-shadow: 0 10px 42px rgba(0,0,0,0.6);
+}
+.mobile-menu a{ display:block; padding:10px 8px; color:var(--text); border-radius:8px; text-decoration:none; }
+.mobile-menu a:hover{ background: rgba(0,0,0,0.04); }
+
+/* Hide old full-screen drawer (kept for reference) */
+.mobile-drawer, .mobile-drawer-backdrop, .mobile-drawer-panel { display:none !important; }
 
 
 /* Respect reduced motion */

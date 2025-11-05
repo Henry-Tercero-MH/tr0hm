@@ -36,6 +36,7 @@ function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileWrapperRef = useRef<HTMLDivElement | null>(null);
   const themeWrapperRef = useRef<HTMLDivElement | null>(null);
   const themeButtonRef = useRef<HTMLButtonElement | null>(null);
   const themeMenuRef = useRef<HTMLDivElement | null>(null);
@@ -126,12 +127,15 @@ function Header() {
   useEffect(() => {
       function onDocClick(e: MouseEvent) {
       const target = e.target as Node;
-      // ignore clicks on the hamburger itself to avoid opening then immediately closing
-      if (hamburgerRef.current && hamburgerRef.current.contains(target)) return;
-      if (themeWrapperRef.current && !themeWrapperRef.current.contains(target)) {
+      // ignore clicks inside the mobile wrapper (hamburger + dropdown)
+      if (mobileWrapperRef.current && mobileWrapperRef.current.contains(target)) return;
+      // ignore clicks on the theme wrapper area
+      if (themeWrapperRef.current && themeWrapperRef.current.contains(target)) return;
+      // otherwise close both menus if open
+      if (!themeWrapperRef.current || !themeWrapperRef.current.contains(target)) {
         setShowThemeMenu(false);
       }
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
+      if (!mobileWrapperRef.current || !mobileWrapperRef.current.contains(target)) {
         setShowMobileMenu(false);
       }
     }
@@ -175,6 +179,7 @@ function Header() {
 
       <div className="nav-links">
         {/* Hamburger for small screens */}
+        <div style={{ position: 'relative' }} ref={mobileWrapperRef}>
         <button
           ref={hamburgerRef}
           className="hamburger"
@@ -230,29 +235,24 @@ function Header() {
           </>
         )}
         <NotificationsDropdown />
-        {/* Mobile nav overlay */}
+        {/* Mobile dropdown anchored to the hamburger (non-fullscreen) */}
         {showMobileMenu && (
-          <div className="mobile-drawer" role="dialog" aria-modal="true">
-            <div className="mobile-drawer-backdrop" onClick={() => setShowMobileMenu(false)} />
-            <div ref={mobileMenuRef} className="mobile-drawer-panel">
-              {/* Theme choices for mobile */}
-                {/* Mobile theme controls were moved to the header theme button; keep drawer focused on navigation only */}
-
-              <nav className="mobile-nav" role="menu" aria-label="Menu principal">
-                <a href="/">Feed</a>
-                <a href="/users">Usuarios</a>
-                <a href="/messages">Mensajes</a>
-                {!user && <a href="/login">Login</a>}
-                {user && (
-                  <>
-                    <a href={`/users/${user.id}`}>Mi perfil</a>
-                    <button className="btn btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
-                  </>
-                )}
-              </nav>
+          <div style={{ position: 'absolute', top: '100%', right: 0 }}>
+            <div className="theme-menu mobile-menu" ref={mobileMenuRef} role="menu" aria-label="Menu principal">
+              <a href="/" onClick={() => setShowMobileMenu(false)}>Feed</a>
+              <a href="/users" onClick={() => setShowMobileMenu(false)}>Usuarios</a>
+              <a href="/messages" onClick={() => setShowMobileMenu(false)}>Mensajes</a>
+              {!user && <a href="/login" onClick={() => setShowMobileMenu(false)}>Login</a>}
+              {user && (
+                <>
+                  <a href={`/users/${user.id}`} onClick={() => setShowMobileMenu(false)}>Mi perfil</a>
+                  <button className="btn btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
+                </>
+              )}
             </div>
           </div>
         )}
+        </div>
       </div>
     </header>
   );
