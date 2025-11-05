@@ -217,23 +217,25 @@ function Header() {
               </div>
             )}
         </div>
-        <a href="/">Feed</a>
-        <a href="/users">Usuarios</a>
-        <a href="/messages">Mensajes</a>
-        {!user && <a href="/login">Login</a>}
-        {user && (
-          <>
-            <a href={`/users/${user.id}`} style={{ display: 'flex', gap: 8, alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
-              {user.avatarUrl ? (
-                <img src={user.avatarUrl} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }} alt={`${user.username} avatar`} className="avatar" style={{ width: 28, height: 28, objectFit: 'cover' }} />
-              ) : (
-                <div className="avatar" style={{ width: 28, height: 28 }} />
-              )}
-              <span className="muted">{user.username}</span>
-            </a>
-            <button className="btn btn-ghost" onClick={logout}>Logout</button>
-          </>
-        )}
+        <div className="nav-inline">
+          <a href="/">Feed</a>
+          <a href="/users">Usuarios</a>
+          <a href="/messages">Mensajes</a>
+          {!user && <a href="/login">Login</a>}
+          {user && (
+            <>
+              <a href={`/users/${user.id}`} style={{ display: 'flex', gap: 8, alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }} alt={`${user.username} avatar`} className="avatar" style={{ width: 28, height: 28, objectFit: 'cover' }} />
+                ) : (
+                  <div className="avatar" style={{ width: 28, height: 28 }} />
+                )}
+                <span className="muted">{user.username}</span>
+              </a>
+              <button className="btn btn-ghost" onClick={logout}>Logout</button>
+            </>
+          )}
+        </div>
         <div className="nav-notifications">
           <NotificationsDropdown />
         </div>

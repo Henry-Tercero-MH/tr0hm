@@ -75,6 +75,13 @@ header.site-header{
 .nav-links a{ color:var(--muted); text-decoration:none; padding:6px 8px; border-radius:6px; white-space:nowrap; }
 .nav-links a:hover{ background: rgba(255,255,255,0.02); color:var(--text); }
 
+/* Container for inline navigation links (desktop / tablet). Keeps links in one row and allows horizontal overflow
+  instead of wrapping into a vertical stack when space is tight. On small screens this container is hidden and
+  the hamburger + mobile menu are used. */
+.nav-inline{ display:flex; gap:12px; align-items:center; min-width:0; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.nav-inline a{ white-space:nowrap; }
+.nav-inline::-webkit-scrollbar{ display:none; }
+
 /* Hamburger button - hidden on desktop, visible on small screens */
 .hamburger{
   display:none;
@@ -220,7 +227,8 @@ textarea{ min-height:100px; resize:vertical; }
   /* show hamburger */
   .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
   /* hide inline textual links and avatar/buttons; keep only hamburger visible on mobile */
-  .nav-links > a, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted { display: none; }
+  .nav-inline { display: none; }
+  .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted { display: none; }
   /* keep theme-toggle visible on mobile (user requested it stays outside the hamburger) */
   .nav-links > .theme-toggle { display: inline-flex; }
   /* keep notifications hidden on mobile to avoid crowding (optional) */
