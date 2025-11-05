@@ -40,6 +40,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   const [viewingStory, setViewingStory] = useState<Story | null>(null);
   const [viewingIndex, setViewingIndex] = useState<number | null>(null);
   const [viewingPaused, setViewingPaused] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   // post edit/delete state
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
   const [editingPostText, setEditingPostText] = useState('');
@@ -73,6 +74,24 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
     })();
   }, []);
 
+      {/* Create Story modal for mobile */}
+      {showCreateModal && (
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowCreateModal(false)}>
+          <div className="modal" style={{ background: '#fff', padding: 16, borderRadius: 8, maxWidth: 420, width: '92%' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <strong>Añadir Historia</strong>
+              <button className="btn btn-ghost" onClick={() => setShowCreateModal(false)} aria-label="Cerrar">✕</button>
+            </div>
+            <form onSubmit={submitStory}>
+              <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
+              <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
+              <div>
+                <button className="btn btn-primary w-100" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
   // On auth change, fetch liked states for posts
   useEffect(() => {
     if (!user) return;
@@ -290,6 +309,8 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
       const r = await api.post('/api/stories', { mediaUrl: optimistic.mediaUrl, text: optimistic.text });
       const server = r.data as Story;
       setStories((s) => [server, ...s.filter((x) => x.id !== optimistic.id)]);
+      // close modal (if open on mobile)
+      setShowCreateModal(false);
       toast.show('Historia creada', 'success');
     } catch (err) {
       console.error('create story', err);
@@ -330,6 +351,15 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
     setViewingIndex(idx);
     setViewingStory(s);
     setViewingPaused(false);
+  };
+
+  const openStoryOrCreate = (idx: number) => {
+    // on small screens open the create modal instead of directly opening the story viewer
+    if (isClient && window.innerWidth <= 520) {
+      setShowCreateModal(true);
+      return;
+    }
+    openStoryByIndex(idx);
   };
 
   // Autoplay: advance every N ms unless paused
@@ -378,7 +408,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
             <div className="story-item">
               <div className="story-tile d-flex flex-column align-items-center">
                 {user.avatarUrl ? <img src={user.avatarUrl} className="story-avatar avatar" /> : <div className="story-avatar avatar" />}
-                <button className="btn btn-ghost mt-2 story-open-btn" onClick={() => openStoryByIndex(0)}>
+                <button className="btn btn-ghost mt-2 story-open-btn" onClick={() => openStoryOrCreate(0)}>
                   Tu Historia
                 </button>
                 <form onSubmit={submitStory} className="w-100 mt-2 story-create-form">
