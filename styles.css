@@ -59,7 +59,7 @@ header.site-header{
   /* make header text visible on dark background */
   color: var(--text-high);
 }
-.site-header{ flex-wrap: wrap; }
+.site-header{ /* no wrap by default to keep header on a single row */ flex-wrap: nowrap; }
 .brand{
   display:flex;
   align-items:center;
@@ -215,8 +215,8 @@ textarea{ min-height:100px; resize:vertical; }
 @media (max-width:720px){
   main { margin:12px; padding:12px; }
   header.site-header{ max-width:calc(100% - 24px); margin:12px auto 0; }
-  /* make header wrap so brand and controls stack nicely */
-  header.site-header{ flex-wrap:wrap; align-items:center; }
+  /* keep header on a single row in mobile: brand left, controls right */
+  header.site-header{ flex-wrap:nowrap; align-items:center; }
   /* show hamburger */
   .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
   /* hide inline textual links and avatar/buttons; keep only hamburger visible on mobile */
@@ -225,9 +225,9 @@ textarea{ min-height:100px; resize:vertical; }
   .nav-links > .theme-toggle { display: inline-flex; }
   /* keep notifications hidden on mobile to avoid crowding (optional) */
   .nav-notifications { display: none; }
-  /* ensure nav-links occupies full width under brand so hamburger sits at right */
-  .nav-links { width: 100%; box-sizing: border-box; padding: 6px 8px; }
-  .brand { flex: 0 0 auto; }
+  /* keep brand flexible and nav-links compact so items stay on one row */
+  .brand { flex: 1 1 auto; }
+  .nav-links { flex: 0 0 auto; box-sizing: border-box; padding: 6px 8px; }
 }
 
 /* Fullscreen mobile drawer (backdrop + sliding panel) */
