@@ -36,7 +36,9 @@ function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
+  const themeWrapperRef = useRef<HTMLDivElement | null>(null);
+  const themeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const themeMenuRef = useRef<HTMLDivElement | null>(null);
   const PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23e5e7eb'/><text x='50' y='55' font-size='40' text-anchor='middle' fill='%239ca3af'>?</text></svg>";
 
   useEffect(() => {
@@ -122,11 +124,11 @@ function Header() {
   }
 
   useEffect(() => {
-    function onDocClick(e: MouseEvent) {
+      function onDocClick(e: MouseEvent) {
       const target = e.target as Node;
       // ignore clicks on the hamburger itself to avoid opening then immediately closing
       if (hamburgerRef.current && hamburgerRef.current.contains(target)) return;
-      if (menuRef.current && !menuRef.current.contains(target)) {
+      if (themeWrapperRef.current && !themeWrapperRef.current.contains(target)) {
         setShowThemeMenu(false);
       }
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
@@ -188,8 +190,8 @@ function Header() {
             )}
           </svg>
         </button>
-        <div style={{ position: 'relative' }} ref={menuRef}>
-          <button aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
+      <div style={{ position: 'relative' }} ref={themeWrapperRef}>
+        <button ref={themeButtonRef} aria-label="Cambiar tema" className="theme-toggle" onClick={() => setShowThemeMenu((s) => !s)} title="Cambiar tema">
             {theme === 'dark' ? (
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                 <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor" />
@@ -203,7 +205,7 @@ function Header() {
           </button>
 
             {showThemeMenu && (
-              <div ref={menuRef} className="theme-menu" role="menu" aria-label="Opciones de tema">
+              <div ref={themeMenuRef} className="theme-menu" role="menu" aria-label="Opciones de tema">
                 <button role="menuitem" onClick={() => applyChoice('light')} className="theme-menu-item">Light</button>
                 <button role="menuitem" onClick={() => applyChoice('dark')} className="theme-menu-item">Dark</button>
                 <button role="menuitem" onClick={() => applyChoice('system')} className="theme-menu-item">System</button>
