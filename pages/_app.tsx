@@ -234,7 +234,9 @@ function Header() {
             <button className="btn btn-ghost" onClick={logout}>Logout</button>
           </>
         )}
-        <NotificationsDropdown />
+        <div className="nav-notifications">
+          <NotificationsDropdown />
+        </div>
         {/* Mobile dropdown anchored to the hamburger (non-fullscreen) */}
         {showMobileMenu && (
           <div style={{ position: 'absolute', top: '100%', right: 12, left: 12 }}> 
@@ -267,6 +269,14 @@ function Header() {
                   <button className="mobile-item mobile-logout btn-ghost" onClick={() => { setShowMobileMenu(false); logout(); }}>Logout</button>
                 </>
               )}
+
+              {/* Theme choices inside mobile menu */}
+              <div className="mobile-divider" />
+              <div style={{ display: 'flex', gap: 8, paddingTop: 6 }}>
+                <button className="btn btn-ghost" onClick={() => { applyChoice('light'); setShowMobileMenu(false); }}>Light</button>
+                <button className="btn btn-ghost" onClick={() => { applyChoice('dark'); setShowMobileMenu(false); }}>Dark</button>
+                <button className="btn btn-ghost" onClick={() => { applyChoice('system'); setShowMobileMenu(false); }}>System</button>
+              </div>
             </div>
           </div>
         )}

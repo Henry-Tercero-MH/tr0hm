@@ -219,9 +219,11 @@ textarea{ min-height:100px; resize:vertical; }
   header.site-header{ flex-wrap:wrap; align-items:center; }
   /* show hamburger */
   .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
-  /* hide inline textual links and avatar/buttons but keep theme-toggle visible */
+  /* hide inline textual links and avatar/buttons; keep only hamburger visible on mobile */
   .nav-links > a, .nav-links > .avatar, .nav-links > .btn, .nav-links > .muted { display: none; }
-  .nav-links > .theme-toggle { display: inline-flex; }
+  /* hide theme-toggle and notifications icon on mobile to use a single menu button */
+  .nav-links > .theme-toggle { display: none; }
+  .nav-notifications { display: none; }
   /* ensure nav-links occupies full width under brand so hamburger sits at right */
   .nav-links { width: 100%; box-sizing: border-box; padding: 6px 8px; }
   .brand { flex: 0 0 auto; }
