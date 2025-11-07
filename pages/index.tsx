@@ -74,24 +74,6 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
     })();
   }, []);
 
-      {/* Create Story modal for mobile */}
-      {showCreateModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowCreateModal(false)}>
-          <div className="modal" style={{ background: '#fff', padding: 16, borderRadius: 8, maxWidth: 420, width: '92%' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <strong>Añadir Historia</strong>
-              <button className="btn btn-ghost" onClick={() => setShowCreateModal(false)} aria-label="Cerrar">✕</button>
-            </div>
-            <form onSubmit={submitStory}>
-              <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
-              <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
-              <div>
-                <button className="btn btn-primary w-100" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
   // On auth change, fetch liked states for posts
   useEffect(() => {
     if (!user) return;
@@ -598,6 +580,25 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
       <ConfirmModal open={!!confirmDeletePostId} title="Eliminar publicación" description="¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer." confirmLabel="Eliminar" cancelLabel="Cancelar" loading={confirmDeletingPost} onCancel={() => setConfirmDeletePostId(null)} onConfirm={() => performDeletePost()} />
       {/* Confirm delete story modal */}
       <ConfirmModal open={!!confirmDeleteStoryId} title="Eliminar historia" description="¿Estás seguro de que deseas eliminar esta historia? Esta acción no se puede deshacer." confirmLabel="Eliminar" cancelLabel="Cancelar" loading={confirmDeletingStory} onCancel={() => setConfirmDeleteStoryId(null)} onConfirm={() => performDeleteStory()} />
+      
+      {/* Create Story modal for mobile */}
+      {showCreateModal && (
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }} onClick={() => setShowCreateModal(false)}>
+          <div className="modal" style={{ background: 'var(--card)', padding: 16, borderRadius: 8, maxWidth: 420, width: '92%' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <strong>Añadir Historia</strong>
+              <button className="btn btn-ghost" onClick={() => setShowCreateModal(false)} aria-label="Cerrar">✕</button>
+            </div>
+            <form onSubmit={submitStory}>
+              <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
+              <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
+              <div>
+                <button className="btn btn-primary w-100" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
