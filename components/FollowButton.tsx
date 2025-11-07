@@ -71,69 +71,64 @@ export default function FollowButton({ userId, compact = false }: { userId: numb
   if (!user) return null;
   if (user.id === userId) return null;
 
-  // Inline SVG icons for small buttons — keep accessible labels via visually-hidden
+  // WhatsApp style icons - cleaner and more modern
   const IconPersonPlus = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M15 14c2.761 0 5 2.239 5 5v1H4v-1c0-2.761 2.239-5 5-5h6z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 10a4 4 0 108 0 4 4 0 00-8 0z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M19 8v4M21 10h-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-  const IconPaperPlane = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M22 2L11 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="19" y1="8" x2="19" y2="14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="16" y1="11" x2="22" y2="11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   );
   const IconCheck = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
-  const IconPersonX = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M6 21v-1c0-2 2.686-3.5 6-3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M18 16l4 4M22 16l-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  const IconCheckDouble = (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M18 6L9 15l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M22 6l-9 9-1.5-1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  const IconX = (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   );
 
   if (status === 'none') {
     return (
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-primary d-inline-flex align-items-center`} onClick={sendRequest} disabled={loading}>
-        <span aria-hidden className="me-2">{IconPersonPlus}</span>
-        <span className="visually-hidden">Solicitar</span>
-        {!compact && <span>Solicitar</span>}
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-primary d-inline-flex align-items-center`} style={{gap: '6px'}} onClick={sendRequest} disabled={loading}>
+        {IconPersonPlus}
+        {!compact && <span>Seguir</span>}
       </button>
     );
   }
   if (status === 'requested') {
     return (
-      <div className={`d-inline-flex align-items-center ${compact ? '' : 'gap-2'}`}>
-        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-primary d-inline-flex align-items-center`} disabled aria-label="Solicitud enviada">
-          <span aria-hidden className="me-1">{IconPaperPlane}</span>
-          <span className="visually-hidden">Enviado</span>
+      <div className={`d-inline-flex align-items-center gap-2`}>
+        <button className={`btn ${compact ? 'btn-sm' : ''} btn-ghost d-inline-flex align-items-center`} style={{gap: '6px'}} disabled aria-label="Solicitud enviada">
+          {IconCheck}
           {!compact && <span>Enviado</span>}
         </button>
-        <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-secondary d-inline-flex align-items-center`} onClick={cancelRequest} disabled={loading} aria-label="Cancelar solicitud">
-          <span aria-hidden className="me-1">✖</span>
-          <span className="visually-hidden">Cancelar</span>
+        <button className={`btn ${compact ? 'btn-sm' : ''} btn-ghost d-inline-flex align-items-center`} style={{gap: '4px'}} onClick={cancelRequest} disabled={loading} aria-label="Cancelar solicitud">
+          {IconX}
           {!compact && <span>Cancelar</span>}
         </button>
       </div>
     );
   }
   return (
-    <div className={`d-inline-flex align-items-center ${compact ? '' : 'gap-2'}`}>
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-success d-inline-flex align-items-center`} disabled aria-label="Siguiendo">
-        <span aria-hidden className="me-1">{IconCheck}</span>
-        <span className="visually-hidden">Siguiendo</span>
+    <div className={`d-inline-flex align-items-center gap-2`}>
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-ghost d-inline-flex align-items-center`} style={{gap: '6px'}} disabled aria-label="Siguiendo">
+        {IconCheckDouble}
         {!compact && <span>Siguiendo</span>}
       </button>
-      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-danger d-inline-flex align-items-center`} onClick={unfollow} disabled={loading} aria-label="Dejar de seguir">
-        <span aria-hidden className="me-1">{IconPersonX}</span>
-        <span className="visually-hidden">Dejar de seguir</span>
-        {!compact && <span>Dejar de seguir</span>}
+      <button className={`btn ${compact ? 'btn-sm' : ''} btn-outline-secondary d-inline-flex align-items-center`} style={{gap: '4px'}} onClick={unfollow} disabled={loading} aria-label="Dejar de seguir">
+        {IconX}
+        {!compact && <span>Dejar</span>}
       </button>
     </div>
   );

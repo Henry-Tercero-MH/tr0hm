@@ -18,7 +18,7 @@ type Post = {
 
 type Comment = { id: number; content: string; author: { id: number; username: string; avatarUrl?: string }; createdAt: string };
 
-import { formatStable } from '../lib/formatDate';
+import { formatStable, formatCompact } from '../lib/formatDate';
 
 export default function Home({ posts: initialPosts, page, total }: { posts: Post[]; page: number; total?: number }) {
   const { user } = useAuth();
@@ -486,27 +486,32 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
               onClick={(e) => toggleLike(e, p.id)}
               aria-pressed={!!likedMap[p.id]}
               aria-label={likedMap[p.id] ? 'Desmarcar' : 'Marcar'}
+              style={{gap: '6px'}}
             >
               {likedMap[p.id] ? (
-                // full moon when liked
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <circle cx="12" cy="12" r="8" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               ) : (
-                // crescent when not liked
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               )}
               <small className="muted">{p._count?.likes || 0}</small>
             </button>
-            <button className="btn btn-ghost" onClick={(e) => toggleComments(e, p.id)}>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span>{p._count?.comments || 0} Comentarios</span>
+            <button className="btn btn-ghost" onClick={(e) => toggleComments(e, p.id)} style={{gap: '6px'}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span>{p._count?.comments || 0}</span>
             </button>
-            <button className="btn btn-ghost" onClick={(e) => sharePost(e, p.id)}>
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M4 12v7a1 1 0 0 0 1.6.8L12 17l6.4 2.8A1 1 0 0 0 20 19v-7"/>
+            <button className="btn btn-ghost" onClick={(e) => sharePost(e, p.id)} style={{gap: '6px'}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <circle cx="18" cy="5" r="3"/>
+                <circle cx="6" cy="12" r="3"/>
+                <circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
               </svg>
               <span>Compartir</span>
             </button>
@@ -534,11 +539,15 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
               <div style={{ marginTop: 12 }}>
                 {(commentsMap[p.id] || []).map((c) => (
                   <div key={c.id} className="comment">
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                      <UserBadge user={c.author} size={28} showName={true} />
-                      <div style={{ marginLeft: 8 }}>
-                        <div><span className="muted">{formatStable(c.createdAt)}</span></div>
-                        <div>{c.content}</div>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                      <UserBadge user={c.author} size={32} showName={false} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                          <strong style={{ fontSize: '14px' }}>{c.author.username}</strong>
+                          <span className="muted" style={{ fontSize: '11px' }}>·</span>
+                          <span className="muted" style={{ fontSize: '11px' }}>{formatCompact(c.createdAt)}</span>
+                        </div>
+                        <div style={{ fontSize: '14px', lineHeight: '1.4' }}>{c.content}</div>
                       </div>
                     </div>
                   </div>
