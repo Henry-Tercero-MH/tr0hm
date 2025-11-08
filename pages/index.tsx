@@ -237,22 +237,10 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
         
         // Check if we've already rendered this URL
         if (renderedUrls.has(url)) {
-          elements.push(
-            <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="post-link">
-              {url}
-            </a>
-          );
-          return;
+          return; // Skip duplicate URLs
         }
         
         renderedUrls.add(url);
-        
-        // Render clickable link
-        elements.push(
-          <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="post-link">
-            {url}
-          </a>
-        );
         
         // Check what type of URL it is and render preview
         if (isImageUrl(url)) {
@@ -264,13 +252,19 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                 style={{ 
                   width: '100%', 
                   maxHeight: 500, 
-                  objectFit: 'cover', 
+                  objectFit: 'contain', 
                   borderRadius: 8,
-                  cursor: 'pointer'
+                  display: 'block',
+                  background: '#f5f5f5'
                 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(url, '_blank');
+                loading="lazy"
+                onError={(e) => {
+                  // If image fails to load, show the URL as a link instead
+                  const target = e.currentTarget;
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="post-link" style="display: block; padding: 12px; text-align: center;">🖼️ ${url}</a>`;
+                  }
                 }}
               />
             </div>
@@ -283,11 +277,14 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                 style={{ 
                   width: '100%', 
                   maxHeight: 500, 
-                  borderRadius: 8 
+                  borderRadius: 8,
+                  display: 'block',
+                  background: '#000'
                 }}
+                preload="metadata"
               >
                 <source src={url} />
-                Tu navegador no soporta videos.
+                Tu navegador no soporta videos HTML5.
               </video>
             </div>
           );
@@ -295,7 +292,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
           const youtubeId = getYouTubeVideoId(url);
           if (youtubeId) {
             elements.push(
-              <div key={`yt-${index}`} className="post-media" style={{ marginTop: 12, position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+              <div key={`yt-${index}`} className="post-media" style={{ marginTop: 12, position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 8 }}>
                 <iframe
                   src={`https://www.youtube.com/embed/${youtubeId}`}
                   frameBorder="0"
@@ -309,14 +306,15 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                     height: '100%',
                     borderRadius: 8
                   }}
+                  title="Video de YouTube"
                 />
               </div>
             );
           } else {
-            // Generic link preview
+            // Generic link preview - show as clickable card
             elements.push(
               <div key={`link-${index}`} className="post-link-preview" style={{ marginTop: 12 }}>
-                <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                   <div style={{ 
                     padding: 12, 
                     border: '1px solid var(--glass-border)', 
@@ -329,7 +327,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                   }}
                   className="link-preview-card"
                   >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                     </svg>
@@ -341,7 +339,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                         {url}
                       </div>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <polyline points="9 18 15 12 9 6"/>
                     </svg>
                   </div>
