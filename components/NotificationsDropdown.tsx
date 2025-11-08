@@ -16,7 +16,7 @@ export default function NotificationsDropdown() {
     if (!open) return;
     const ids = new Set<number>();
     notifications.forEach((n) => {
-      const id = (n.payload && (n.payload.from || n.payload.userId || n.payload.userId)) as number | undefined;
+      const id = (n.payload && (n.payload.from || n.payload.userId || n.payload.followerId)) as number | undefined;
       if (id && !usersCache[id]) ids.add(id);
     });
     if (ids.size === 0) return;
@@ -57,11 +57,19 @@ export default function NotificationsDropdown() {
         return;
       }
     }
-//
+
     if (n.type === 'like') {
       const postId = payload.postId;
       if (postId) {
         router.push(`/posts/${postId}`);
+        return;
+      }
+    }
+
+    if (n.type === 'follow') {
+      const followerId = payload.followerId;
+      if (followerId) {
+        router.push(`/users/${followerId}`);
         return;
       }
     }
@@ -83,7 +91,7 @@ export default function NotificationsDropdown() {
               {notifications.length === 0 && <div className="p-3">No hay notificaciones</div>}
               {notifications.map((n) => {
                 const payload = n.payload || {};
-                const actorId = payload.from || payload.userId || null;
+                const actorId = payload.from || payload.userId || payload.followerId || null;
                 const actor = actorId ? usersCache[actorId] : null;
 
                 // build a friendly title and subtitle
@@ -97,6 +105,9 @@ export default function NotificationsDropdown() {
                   subtitle = payload.preview || '';
                 } else if (n.type === 'like') {
                   title = actor ? `${actor.username} dio me gusta` : 'Nueva reacción';
+                  subtitle = '';
+                } else if (n.type === 'follow') {
+                  title = actor ? `${actor.username} comenzó a seguirte` : 'Nuevo seguidor';
                   subtitle = '';
                 } else {
                   title = n.type || 'Notificación';
