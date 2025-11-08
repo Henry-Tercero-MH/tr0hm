@@ -792,6 +792,34 @@ a:focus, button:focus, input:focus, textarea:focus{
   transform: scale(1.05);
 }
 
+/* Online status indicator - punto verde conectado */
+.online-indicator {
+  animation: pulse-online 2s ease-in-out infinite;
+}
+
+@keyframes pulse-online {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(37, 211, 102, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(37, 211, 102, 0.8), 0 0 12px rgba(37, 211, 102, 0.4);
+  }
+}
+
+[data-theme="dark"] .online-indicator {
+  background-color: #00A884 !important;
+  animation: pulse-online-dark 2s ease-in-out infinite;
+}
+
+@keyframes pulse-online-dark {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(0, 168, 132, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(0, 168, 132, 0.9), 0 0 12px rgba(0, 168, 132, 0.5);
+  }
+}
+
 /* Message bubble styles - WhatsApp inspired */
 .msg-bubble{
   border-radius:8px;

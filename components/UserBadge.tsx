@@ -5,9 +5,9 @@ import { useToast } from '../context/ToastContext';
 import api from '../lib/api';
 import FollowButton from './FollowButton';
 
-type U = { id?: number; username?: string; avatarUrl?: string | null; avatar?: string | null } | null | undefined;
+type U = { id?: number; username?: string; avatarUrl?: string | null; avatar?: string | null; isOnline?: boolean } | null | undefined;
 
-export default function UserBadge({ user, size = 28, link = false, showName = true, className = '' }: { user?: U; size?: number; link?: boolean; showName?: boolean; className?: string }) {
+export default function UserBadge({ user, size = 28, link = false, showName = true, className = '', showOnlineStatus = true }: { user?: U; size?: number; link?: boolean; showName?: boolean; className?: string; showOnlineStatus?: boolean }) {
   const PLACEHOLDER = '/avatar-fallback.svg';
   const { user: me } = useAuth();
   const toast = useToast();
@@ -19,18 +19,54 @@ export default function UserBadge({ user, size = 28, link = false, showName = tr
   const name = user?.username || 'Anon';
 
   const img = (
-    <img
-      src={avatar || PLACEHOLDER}
-      onError={(e) => { (e.currentTarget as HTMLImageElement).onerror = null; e.currentTarget.src = PLACEHOLDER; }}
-      alt={`${name} avatar`}
-      style={{ width: size, height: size, objectFit: 'cover' }}
-      className={`rounded-circle user-badge-avatar ${className}`}
-    />
+    <div className="position-relative d-inline-block">
+      <img
+        src={avatar || PLACEHOLDER}
+        onError={(e) => { (e.currentTarget as HTMLImageElement).onerror = null; e.currentTarget.src = PLACEHOLDER; }}
+        alt={`${name} avatar`}
+        style={{ width: size, height: size, objectFit: 'cover' }}
+        className={`rounded-circle user-badge-avatar ${className}`}
+      />
+      {showOnlineStatus && (user as any)?.isOnline && (
+        <span 
+          className="online-indicator"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: size * 0.28,
+            height: size * 0.28,
+            backgroundColor: '#25D366',
+            border: '2px solid var(--bg)',
+            borderRadius: '50%',
+            boxShadow: '0 0 4px rgba(37, 211, 102, 0.5)'
+          }}
+        />
+      )}
+    </div>
   );
 
   const initials = (
-    <div className={`avatar ${className}`} style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      {name.slice(0, 1).toUpperCase()}
+    <div className="position-relative d-inline-block">
+      <div className={`avatar ${className}`} style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {name.slice(0, 1).toUpperCase()}
+      </div>
+      {showOnlineStatus && (user as any)?.isOnline && (
+        <span 
+          className="online-indicator"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: size * 0.28,
+            height: size * 0.28,
+            backgroundColor: '#25D366',
+            border: '2px solid var(--bg)',
+            borderRadius: '50%',
+            boxShadow: '0 0 4px rgba(37, 211, 102, 0.5)'
+          }}
+        />
+      )}
     </div>
   );
 
