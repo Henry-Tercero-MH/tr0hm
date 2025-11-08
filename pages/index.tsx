@@ -207,6 +207,158 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
     }
   };
 
+  // URL detection and rendering helpers
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  
+  const isImageUrl = (url: string): boolean => {
+    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+  };
+
+  const isVideoUrl = (url: string): boolean => {
+    return /\.(mp4|webm|ogg)$/i.test(url);
+  };
+
+  const getYouTubeVideoId = (url: string): string | null => {
+    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    return match ? match[1] : null;
+  };
+
+  const renderContent = (content: string) => {
+    if (!content) return null;
+    
+    const parts = content.split(urlRegex);
+    const elements: React.ReactNode[] = [];
+    const renderedUrls = new Set<string>();
+
+    parts.forEach((part, index) => {
+      if (urlRegex.test(part)) {
+        // It's a URL
+        const url = part.trim();
+        
+        // Check if we've already rendered this URL
+        if (renderedUrls.has(url)) {
+          elements.push(
+            <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="post-link">
+              {url}
+            </a>
+          );
+          return;
+        }
+        
+        renderedUrls.add(url);
+        
+        // Render clickable link
+        elements.push(
+          <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="post-link">
+            {url}
+          </a>
+        );
+        
+        // Check what type of URL it is and render preview
+        if (isImageUrl(url)) {
+          elements.push(
+            <div key={`img-${index}`} className="post-media" style={{ marginTop: 12 }}>
+              <img 
+                src={url} 
+                alt="Imagen compartida" 
+                style={{ 
+                  width: '100%', 
+                  maxHeight: 500, 
+                  objectFit: 'cover', 
+                  borderRadius: 8,
+                  cursor: 'pointer'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(url, '_blank');
+                }}
+              />
+            </div>
+          );
+        } else if (isVideoUrl(url)) {
+          elements.push(
+            <div key={`video-${index}`} className="post-media" style={{ marginTop: 12 }}>
+              <video 
+                controls 
+                style={{ 
+                  width: '100%', 
+                  maxHeight: 500, 
+                  borderRadius: 8 
+                }}
+              >
+                <source src={url} />
+                Tu navegador no soporta videos.
+              </video>
+            </div>
+          );
+        } else {
+          const youtubeId = getYouTubeVideoId(url);
+          if (youtubeId) {
+            elements.push(
+              <div key={`yt-${index}`} className="post-media" style={{ marginTop: 12, position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${youtubeId}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 8
+                  }}
+                />
+              </div>
+            );
+          } else {
+            // Generic link preview
+            elements.push(
+              <div key={`link-${index}`} className="post-link-preview" style={{ marginTop: 12 }}>
+                <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div style={{ 
+                    padding: 12, 
+                    border: '1px solid var(--glass-border)', 
+                    borderRadius: 8, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 12,
+                    background: 'var(--bg)',
+                    transition: 'all 0.2s ease'
+                  }}
+                  className="link-preview-card"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    </svg>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 500, fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {new URL(url).hostname}
+                      </div>
+                      <div style={{ fontSize: 12, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {url}
+                      </div>
+                    </div>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            );
+          }
+        }
+      } else if (part.trim()) {
+        // It's regular text
+        elements.push(<span key={index}>{part}</span>);
+      }
+    });
+
+    return <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{elements}</div>;
+  };
+
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return alert('Debes iniciar sesión');
@@ -440,13 +592,70 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
           ))}
         </div>
       </section>
-      <h1>Feed</h1>
+      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16, marginTop: 24 }}>Feed</h1>
       {user && (
-        <div className="card p-3">
+        <div className="card" style={{ padding: 20, marginBottom: 20 }}>
           <form onSubmit={submitPost}>
-            <textarea className="form-control" value={newPostText} onChange={(e) => setNewPostText(e.target.value)} placeholder="¿Qué estás pensando?" />
-            <div className="d-flex gap-2 mt-2">
-              <button className="btn btn-primary" type="submit" disabled={creatingPost}>{creatingPost ? 'Publicando...' : 'Publicar'}</button>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 12 }}>
+              {user.avatarUrl ? (
+                <img src={user.avatarUrl} style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} alt={user.username} />
+              ) : (
+                <div className="avatar" style={{ width: 48, height: 48, flexShrink: 0 }} />
+              )}
+              <textarea 
+                className="form-control" 
+                value={newPostText} 
+                onChange={(e) => setNewPostText(e.target.value)} 
+                placeholder="¿Qué estás pensando?" 
+                rows={3}
+                style={{ 
+                  flex: 1, 
+                  resize: 'vertical', 
+                  minHeight: 60,
+                  fontSize: 15
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 12, borderTop: '1px solid var(--glass-border)' }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button 
+                  type="button" 
+                  className="btn btn-ghost" 
+                  style={{ padding: '8px 12px', gap: 6 }}
+                  title="Pega una URL para compartir imágenes, videos o enlaces"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <span style={{ fontSize: 14 }}>Imagen/Video</span>
+                </button>
+                <span style={{ fontSize: 12, color: 'var(--muted)' }}>
+                  Puedes pegar URLs de imágenes, videos o enlaces
+                </span>
+              </div>
+              <button 
+                className="btn btn-primary" 
+                type="submit" 
+                disabled={creatingPost || !newPostText.trim()}
+                style={{ minWidth: 100 }}
+              >
+                {creatingPost ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Publicando...
+                  </>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 6 }}>
+                      <line x1="22" y1="2" x2="11" y2="13"/>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    Publicar
+                  </>
+                )}
+              </button>
             </div>
           </form>
         </div>
@@ -479,15 +688,19 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
             </div>
             <div className="post-meta ms-3" style={{ flex: '0 0 auto', whiteSpace: 'nowrap' }}>{formatStable(p.createdAt)}</div>
           </div>
-          <div className="post-body">{editingPostId === p.id ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <textarea value={editingPostText} onChange={(e) => setEditingPostText(e.target.value)} style={{ width: '100%', minHeight: 120, padding: 8, borderRadius: 8 }} />
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button className="btn btn-primary" onClick={(e) => { e.stopPropagation(); savePostEdit(p.id); }} disabled={savingPostEdit}>{savingPostEdit ? 'Guardando...' : 'Guardar'}</button>
-                <button className="btn btn-ghost" onClick={(e) => { e.stopPropagation(); setEditingPostId(null); setEditingPostText(''); }} type="button">Cancelar</button>
+          <div className="post-body">
+            {editingPostId === p.id ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <textarea value={editingPostText} onChange={(e) => setEditingPostText(e.target.value)} style={{ width: '100%', minHeight: 120, padding: 8, borderRadius: 8 }} />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="btn btn-primary" onClick={(e) => { e.stopPropagation(); savePostEdit(p.id); }} disabled={savingPostEdit}>{savingPostEdit ? 'Guardando...' : 'Guardar'}</button>
+                  <button className="btn btn-ghost" onClick={(e) => { e.stopPropagation(); setEditingPostId(null); setEditingPostText(''); }} type="button">Cancelar</button>
+                </div>
               </div>
-            </div>
-          ) : p.content}</div>
+            ) : (
+              renderContent(p.content)
+            )}
+          </div>
           <div className="post-actions">
             <button
               className={`btn btn-ghost btn-like-anim ${likedMap[p.id] ? 'btn-liked' : ''}`}

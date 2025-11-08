@@ -500,8 +500,40 @@ main{
 
 .post-header .avatar{ width:52px; height:52px; box-shadow: 0 1px 2px rgba(11,20,26,0.1); }
 [data-theme="dark"] .post-header .avatar{ box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-.post-body{ color: var(--text); font-size: 15px; }
+.post-body{ color: var(--text); font-size: 15px; line-height: 1.6; }
 .post-meta{ color: var(--muted); font-size: 13px; }
+
+/* Post links and media */
+.post-link{
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  word-break: break-all;
+}
+.post-link:hover{
+  color: var(--accent);
+  text-decoration: underline;
+}
+.post-media{
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.post-media img{
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: cover;
+}
+.link-preview-card:hover{
+  background: var(--card-hover, rgba(0,0,0,0.02)) !important;
+  border-color: var(--primary) !important;
+}
+[data-theme="dark"] .link-preview-card:hover{
+  background: rgba(255,255,255,0.05) !important;
+}
 
 /* post menu in top-right corner */
 .post-card .post-menu{ position: absolute; top: 10px; right: 12px; display:flex; gap:6px; align-items:center; }
