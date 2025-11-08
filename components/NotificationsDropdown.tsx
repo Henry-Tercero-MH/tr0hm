@@ -57,7 +57,7 @@ export default function NotificationsDropdown() {
         return;
       }
     }
-
+//
     if (n.type === 'like') {
       const postId = payload.postId;
       if (postId) {
