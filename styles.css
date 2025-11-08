@@ -386,20 +386,10 @@ textarea{ min-height:100px; resize:vertical; }
 .stories-bar{ padding: 8px 6px; margin-bottom: 16px; }
 .story-item{ flex: 0 0 auto; width: 92px; text-align: center; min-width: 64px; }
 .story-btn{ background: transparent; border: 0; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; padding: 6px 4px; }
-.story-avatar{ width: 64px; height: 64px; border-radius: 999px; object-fit: cover; display: inline-block; }
+.story-tile{ transition: transform 0.2s ease, opacity 0.2s ease; }
+.story-tile:hover{ transform: scale(1.05); opacity: 0.9; }
+.story-avatar{ width: 64px; height: 64px; border-radius: 999px; object-fit: cover; display: inline-block; transition: filter 0.2s ease; }
 .story-label{ font-size: 12px; margin-top: 6px; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.story-open-btn{ 
-  font-size: 12px; 
-  padding: 4px 8px; 
-  white-space: nowrap; 
-  background: var(--primary) !important; 
-  color: white !important; 
-  border-radius: 6px;
-  font-weight: 600;
-}
-.story-open-btn:hover{ 
-  background: var(--accent) !important; 
-}
 
 /* mobile adjustments: smaller avatars */
 @media (max-width:520px){
@@ -407,7 +397,6 @@ textarea{ min-height:100px; resize:vertical; }
   .story-item{ width: 76px; }
   .story-avatar{ width: 48px; height: 48px; }
   .story-label{ font-size: 11px; }
-  .story-open-btn{ font-size: 11px; padding: 3px 6px; }
   /* reposition pulse relative to avatar */
   .story-pulse{ position: absolute; top: 6px; right: 12px; margin-top: 0; margin-left: 0; width: 10px; height: 10px; }
 }

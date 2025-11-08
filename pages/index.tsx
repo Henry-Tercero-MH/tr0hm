@@ -270,15 +270,32 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
 
   const submitStory = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return alert('Debes iniciar sesión');
-    if (!newStoryMedia && (!newStoryText || newStoryText.trim().length === 0)) return;
+    if (!user) {
+      toast.show('Debes iniciar sesión para crear historias', 'error');
+      return;
+    }
+    
+    const mediaUrl = newStoryMedia.trim();
+    if (!mediaUrl) {
+      toast.show('Debes agregar una URL de imagen', 'error');
+      return;
+    }
+    
+    // Basic URL validation
+    try {
+      new URL(mediaUrl);
+    } catch {
+      toast.show('La URL de la imagen no es válida', 'error');
+      return;
+    }
+    
     setCreatingStory(true);
     const optimistic: Story = {
       id: -Date.now() as unknown as number,
       userId: user.id as number,
       author: { id: user.id as number, username: user.username as string, avatarUrl: (user as any).avatarUrl },
-      mediaUrl: newStoryMedia || null,
-      text: newStoryText || null,
+      mediaUrl: mediaUrl,
+      text: newStoryText.trim() || null,
       createdAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     };
@@ -293,12 +310,12 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
       setStories((s) => [server, ...s.filter((x) => x.id !== optimistic.id)]);
       // close modal (if open on mobile)
       setShowCreateModal(false);
-      toast.show('Historia creada', 'success');
+      toast.show('Historia creada exitosamente', 'success');
     } catch (err) {
       console.error('create story', err);
       // rollback
       setStories((s) => s.filter((x) => x.id !== optimistic.id));
-      toast.show('No se pudo crear la historia', 'error');
+      toast.show('No se pudo crear la historia. Intenta de nuevo.', 'error');
     } finally {
       setCreatingStory(false);
     }
@@ -389,11 +406,36 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
         <div className="stories-bar d-flex gap-3 overflow-auto py-2">
           {user && (
             <div className="story-item">
-              <div className="story-tile d-flex flex-column align-items-center">
-                {user.avatarUrl ? <img src={user.avatarUrl} className="story-avatar avatar" /> : <div className="story-avatar avatar" />}
-                <button className="btn btn-ghost mt-2 story-open-btn" onClick={() => openStoryOrCreate(0)}>
-                  + Crear
-                </button>
+              <div className="story-tile d-flex flex-column align-items-center" style={{ cursor: 'pointer' }} onClick={() => openStoryOrCreate(0)}>
+                <div style={{ position: 'relative', width: 64, height: 64 }}>
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} className="story-avatar avatar" style={{ filter: 'brightness(0.8)' }} />
+                  ) : (
+                    <div className="story-avatar avatar" style={{ background: 'var(--primary)', opacity: 0.8 }} />
+                  )}
+                  <div style={{ 
+                    position: 'absolute', 
+                    bottom: -4, 
+                    right: -4, 
+                    width: 28, 
+                    height: 28, 
+                    borderRadius: '50%', 
+                    background: 'var(--primary)', 
+                    border: '3px solid var(--card)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                  }}>
+                    +
+                  </div>
+                </div>
+                <div style={{ marginTop: 8, fontSize: 12, fontWeight: 600, color: 'var(--primary)' }}>
+                  Crear
+                </div>
               </div>
             </div>
           )}
@@ -577,17 +619,93 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
       
       {/* Create Story modal for mobile */}
       {showCreateModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }} onClick={() => setShowCreateModal(false)}>
-          <div className="modal" style={{ background: 'var(--card)', padding: 16, borderRadius: 8, maxWidth: 420, width: '92%' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <strong>Añadir Historia</strong>
-              <button className="btn btn-ghost" onClick={() => setShowCreateModal(false)} aria-label="Cerrar">✕</button>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }} onClick={() => setShowCreateModal(false)}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: 480, width: '92%', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h3 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>Crear Historia</h3>
+              <button 
+                className="btn btn-ghost" 
+                onClick={() => setShowCreateModal(false)} 
+                aria-label="Cerrar"
+                style={{ width: 36, height: 36, borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
             </div>
             <form onSubmit={submitStory}>
-              <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
-              <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
-              <div>
-                <button className="btn btn-primary w-100" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
+              <div style={{ marginBottom: 16 }}>
+                <label htmlFor="story-media" style={{ display: 'block', marginBottom: 8, fontWeight: 500, fontSize: 14 }}>
+                  URL de Imagen <span style={{ color: 'var(--danger)', marginLeft: 4 }}>*</span>
+                </label>
+                <input 
+                  id="story-media"
+                  className="form-control" 
+                  placeholder="https://ejemplo.com/imagen.jpg" 
+                  value={newStoryMedia} 
+                  onChange={(e) => setNewStoryMedia(e.target.value)}
+                  required
+                  style={{ fontSize: 14 }}
+                />
+                {newStoryMedia && (
+                  <div style={{ marginTop: 12, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
+                    <img 
+                      src={newStoryMedia} 
+                      alt="Preview" 
+                      style={{ width: '100%', maxHeight: 300, objectFit: 'cover' }}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label htmlFor="story-text" style={{ display: 'block', marginBottom: 8, fontWeight: 500, fontSize: 14 }}>
+                  Texto (opcional)
+                </label>
+                <textarea 
+                  id="story-text"
+                  className="form-control" 
+                  placeholder="Escribe algo sobre tu historia..." 
+                  value={newStoryText} 
+                  onChange={(e) => setNewStoryText(e.target.value)}
+                  rows={3}
+                  maxLength={200}
+                  style={{ fontSize: 14, resize: 'vertical' }}
+                />
+                <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4, textAlign: 'right' }}>
+                  {newStoryText.length}/200
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 12 }}>
+                <button 
+                  className="btn btn-ghost" 
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  style={{ flex: 1 }}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  className="btn btn-primary" 
+                  type="submit" 
+                  disabled={creatingStory || !newStoryMedia.trim()}
+                  style={{ flex: 1 }}
+                >
+                  {creatingStory ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Publicando...
+                    </>
+                  ) : (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 6 }}>
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Publicar
+                    </>
+                  )}
+                </button>
               </div>
             </form>
           </div>
