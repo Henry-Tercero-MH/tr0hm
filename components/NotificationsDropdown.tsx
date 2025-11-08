@@ -153,24 +153,24 @@ export default function NotificationsDropdown() {
                     className={`notification ${!n.read ? 'unread' : ''} w-100 text-start`} 
                     onClick={() => handleClick(n)}
                   >
-                    <div className="flex-shrink-0" style={{ width: 44, height: 44 }}>
+                    <div className="flex-shrink-0 me-3" style={{ width: 48, height: 48 }}>
                       {actor ? (
-                        <UserBadge user={actor} size={44} showName={false} />
+                        <UserBadge user={actor} size={48} showName={false} />
                       ) : (
-                        <div className="avatar-neon d-flex align-items-center justify-content-center" style={{ width: 44, height: 44, fontWeight: 700, borderRadius: '50%' }}>
+                        <div className="avatar-neon d-flex align-items-center justify-content-center" style={{ width: 48, height: 48, fontWeight: 700, borderRadius: '50%', fontSize: '18px' }}>
                           {(actorId ? String(actorId).slice(0,1) : 'N')}
                         </div>
                       )}
                     </div>
-                    <div className="flex-grow-1" style={{ minWidth: 0 }}>
-                      <div className="d-flex justify-content-between align-items-start" style={{ gap: 8 }}>
-                        <div className="text-truncate fw-semibold">{title}</div>
-                        <div className="time">{formatCompact(n.createdAt)}</div>
+                    <div className="flex-grow-1" style={{ minWidth: 0, paddingRight: '8px' }}>
+                      <div className="d-flex justify-content-between align-items-start mb-1" style={{ gap: 12 }}>
+                        <div className="text-truncate fw-semibold" style={{ fontSize: '14px', lineHeight: '1.4' }}>{title}</div>
+                        <div className="time" style={{ fontSize: '12px', whiteSpace: 'nowrap', marginLeft: 'auto' }}>{formatCompact(n.createdAt)}</div>
                       </div>
-                      {subtitle ? <div className="muted mt-1 text-truncate">{subtitle}</div> : null}
+                      {subtitle ? <div className="muted text-truncate" style={{ fontSize: '13px', lineHeight: '1.4', marginTop: '4px' }}>{subtitle}</div> : null}
                     </div>
                     {!n.read && (
-                      <div className="align-self-start" style={{ marginTop: '8px' }}>
+                      <div className="align-self-start ms-2" style={{ marginTop: '12px' }}>
                         <span className="badge-unread" />
                       </div>
                     )}
