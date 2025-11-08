@@ -1,16 +1,14 @@
 export function formatStable(dateStr: string) {
-  // produce a timezone-independent stable format (UTC-based) so server and client
-  // render the same string during SSR and hydration
+  // Format in local timezone for better user experience
   if (!dateStr) return '';
   const d = new Date(dateStr);
   if (Number.isNaN(d.getTime())) return dateStr;
-  const dd = String(d.getUTCDate()).padStart(2, '0');
-  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const yyyy = d.getUTCFullYear();
-  const hh = String(d.getUTCHours()).padStart(2, '0');
-  const min = String(d.getUTCMinutes()).padStart(2, '0');
-  const ss = String(d.getUTCSeconds()).padStart(2, '0');
-  // keep a stable UTC-based representation for SSR but avoid showing the literal 'UTC'
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
   return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
 }
 
@@ -32,9 +30,8 @@ export function formatCompact(dateStr: string) {
   if (hours < 24) return `${hours}h`;
   if (days < 7) return `${days}d`;
   
-  // older than a week: show date in dd/mm format
-  const dd = String(d.getUTCDate()).padStart(2, '0');
-  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  // older than a week: show date in dd/mm format (local time)
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
   return `${dd}/${mm}`;
 }
-

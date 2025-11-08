@@ -208,8 +208,6 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   };
 
   // URL detection and rendering helpers
-  const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`\[\]]+)/g;
-  
   const cleanUrl = (url: string): string => {
     // Remove trailing punctuation that's not part of the URL
     return url.replace(/[.,;:!?)\]]+$/, '');
@@ -234,15 +232,19 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   const renderContent = (content: string) => {
     if (!content) return null;
     
-    const parts = content.split(urlRegex);
+    // Reset regex before use
+    const urlPattern = /(https?:\/\/[^\s<>"{}|\\^`\[\]]+)/g;
+    const parts = content.split(urlPattern);
     const elements: React.ReactNode[] = [];
     const renderedUrls = new Set<string>();
 
     parts.forEach((part, index) => {
-      if (urlRegex.test(part)) {
-        // It's a URL
-        const rawUrl = part.trim();
-        const url = cleanUrl(rawUrl);
+      const trimmedPart = part.trim();
+      if (!trimmedPart) return;
+      
+      // Check if this part is a URL
+      if (trimmedPart.startsWith('http://') || trimmedPart.startsWith('https://')) {
+        const url = cleanUrl(trimmedPart);
         
         // Check if we've already rendered this URL
         if (renderedUrls.has(url)) {
@@ -250,6 +252,8 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
         }
         
         renderedUrls.add(url);
+        
+        console.log('Processing URL:', url, 'isImage:', isImageUrl(url));
         
         // Check what type of URL it is and render preview
         if (isImageUrl(url)) {
@@ -268,17 +272,19 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                 }}
                 loading="lazy"
                 onError={(e) => {
-                  // If image fails to load, show the URL as a link instead
+                  console.error('Error loading image:', url);
                   const target = e.currentTarget;
                   const parent = target.parentElement;
                   if (parent) {
                     parent.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="post-link" style="display: block; padding: 12px; text-align: center; color: var(--primary);">🖼️ Error al cargar imagen: ${url}</a>`;
                   }
                 }}
+                onLoad={() => console.log('Image loaded successfully:', url)}
               />
             </div>
           );
         } else if (isVideoUrl(url)) {
+          console.log('Rendering video:', url);
           elements.push(
             <div key={`video-${index}`} className="post-media" style={{ marginTop: 12 }}>
               <video 
@@ -300,6 +306,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
         } else {
           const youtubeId = getYouTubeVideoId(url);
           if (youtubeId) {
+            console.log('Rendering YouTube:', youtubeId);
             elements.push(
               <div key={`yt-${index}`} className="post-media" style={{ marginTop: 12, position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 8 }}>
                 <iframe
@@ -357,9 +364,9 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
             );
           }
         }
-      } else if (part.trim()) {
+      } else {
         // It's regular text
-        elements.push(<span key={index}>{part}</span>);
+        elements.push(<span key={`text-${index}`}>{part}</span>);
       }
     });
 
