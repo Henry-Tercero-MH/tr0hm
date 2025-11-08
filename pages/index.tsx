@@ -352,16 +352,6 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
     setViewingPaused(false);
   };
 
-  const openStoryOrCreate = (idx: number) => {
-    // Always open modal for creating stories (idx === 0)
-    if (idx === 0) {
-      setShowCreateModal(true);
-      return;
-    }
-    // idx > 0 means open viewer
-    openStoryByIndex(idx);
-  };
-
   // Autoplay: advance every N ms unless paused
   useEffect(() => {
     if (viewingIndex === null || viewingStory === null) return;
@@ -406,7 +396,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
         <div className="stories-bar d-flex gap-3 overflow-auto py-2">
           {user && (
             <div className="story-item">
-              <div className="story-tile d-flex flex-column align-items-center" style={{ cursor: 'pointer' }} onClick={() => openStoryOrCreate(0)}>
+              <div className="story-tile d-flex flex-column align-items-center" style={{ cursor: 'pointer' }} onClick={() => setShowCreateModal(true)}>
                 <div style={{ position: 'relative', width: 64, height: 64 }}>
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} className="story-avatar avatar" style={{ filter: 'brightness(0.8)' }} />
@@ -578,29 +568,149 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
 
       {/* Story viewer modal */}
       {viewingStory && viewingIndex !== null && (
-        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => { setViewingStory(null); setViewingIndex(null); }}>
-          <div className="modal" style={{ background: '#fff', padding: 16, borderRadius: 8, maxWidth: 720, width: '90%' }} onClick={(e) => e.stopPropagation()} onMouseEnter={() => setViewingPaused(true)} onMouseLeave={() => setViewingPaused(false)}>
-            <div style={{ display: 'flex', gap: 12 }}>
-              {viewingStory.mediaUrl ? <img src={viewingStory.mediaUrl} style={{ maxWidth: 320, maxHeight: 480, objectFit: 'cover', borderRadius: 6 }} /> : null}
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  {viewingStory.author?.avatarUrl ? <img src={viewingStory.author.avatarUrl} style={{ width: 44, height: 44, borderRadius: '50%' }} /> : <div className="avatar" style={{ width: 44, height: 44 }} />}
-                  <div>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                      <strong>{viewingStory.author?.username || 'Anon'}</strong>
-                      <div className="muted" style={{ fontSize: 12 }}>{formatStable(viewingStory.createdAt)}</div>
-                    </div>
-                    <div style={{ marginTop: 8, height: 6, background: 'rgba(0,0,0,0.06)', borderRadius: 6, overflow: 'hidden' }}>
-                      <div className="story-progress" style={{ width: isClient ? `${Math.min(100, Math.max(0, ((Date.now() - new Date(viewingStory.createdAt).getTime()) % 5000) / 50))}%` : '0%' }} />
-                    </div>
-                  </div>
+        <div 
+          className="modal-overlay" 
+          style={{ 
+            position: 'fixed', 
+            inset: 0, 
+            background: 'rgba(0,0,0,0.85)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            zIndex: 1060
+          }} 
+          onClick={() => { setViewingStory(null); setViewingIndex(null); }}
+        >
+          <div 
+            className="card" 
+            style={{ 
+              padding: 20, 
+              borderRadius: 12, 
+              maxWidth: 800, 
+              width: '95%',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }} 
+            onClick={(e) => e.stopPropagation()} 
+            onMouseEnter={() => setViewingPaused(true)} 
+            onMouseLeave={() => setViewingPaused(false)}
+          >
+            {/* Header with author info */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                {viewingStory.author?.avatarUrl ? (
+                  <img src={viewingStory.author.avatarUrl} style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} alt={viewingStory.author.username} />
+                ) : (
+                  <div className="avatar" style={{ width: 48, height: 48 }} />
+                )}
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 16 }}>{viewingStory.author?.username || 'Anónimo'}</div>
+                  <div className="muted" style={{ fontSize: 13 }}>{formatCompact(viewingStory.createdAt)}</div>
                 </div>
-                <div style={{ marginTop: 12 }}>{viewingStory.text}</div>
-                <div style={{ marginTop: 12 }}>
-                  {user && user.id === viewingStory.userId && (
-                    <button className="btn btn-danger" onClick={() => setConfirmDeleteStoryId(viewingStory.id)}>Eliminar</button>
-                  )}
+              </div>
+              <button 
+                className="btn btn-ghost" 
+                onClick={() => { setViewingStory(null); setViewingIndex(null); }}
+                aria-label="Cerrar"
+                style={{ width: 36, height: 36, borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Progress bar */}
+            <div style={{ marginBottom: 16, height: 4, background: 'rgba(0,0,0,0.1)', borderRadius: 4, overflow: 'hidden' }}>
+              <div 
+                className="story-progress" 
+                style={{ 
+                  width: isClient ? `${Math.min(100, Math.max(0, ((Date.now() - new Date(viewingStory.createdAt).getTime()) % 5000) / 50))}%` : '0%',
+                  height: '100%',
+                  background: 'var(--primary)',
+                  transition: 'width 0.3s ease'
+                }} 
+              />
+            </div>
+
+            {/* Media and content */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {viewingStory.mediaUrl && (
+                <div style={{ borderRadius: 8, overflow: 'hidden', maxHeight: 500 }}>
+                  <img 
+                    src={viewingStory.mediaUrl} 
+                    style={{ width: '100%', height: 'auto', maxHeight: 500, objectFit: 'contain', display: 'block' }} 
+                    alt="Historia"
+                  />
                 </div>
+              )}
+              
+              {viewingStory.text && (
+                <div style={{ fontSize: 15, lineHeight: 1.5, padding: '12px 0' }}>
+                  {viewingStory.text}
+                </div>
+              )}
+              
+              {/* Actions */}
+              {user && user.id === viewingStory.userId && (
+                <div style={{ paddingTop: 12, borderTop: '1px solid var(--glass-border)' }}>
+                  <button 
+                    className="btn btn-danger" 
+                    onClick={() => setConfirmDeleteStoryId(viewingStory.id)}
+                    style={{ gap: 8 }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <line x1="10" y1="11" x2="10" y2="17"/>
+                      <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
+                    Eliminar Historia
+                  </button>
+                </div>
+              )}
+
+              {/* Navigation */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8 }}>
+                <button 
+                  className="btn btn-ghost" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (viewingIndex > 0) {
+                      const prevIdx = viewingIndex - 1;
+                      setViewingIndex(prevIdx);
+                      setViewingStory(stories[prevIdx]);
+                    }
+                  }}
+                  disabled={viewingIndex === 0}
+                  style={{ gap: 6 }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                  Anterior
+                </button>
+                <span className="muted" style={{ fontSize: 13 }}>
+                  {viewingIndex + 1} / {stories.length}
+                </span>
+                <button 
+                  className="btn btn-ghost" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (viewingIndex < stories.length - 1) {
+                      const nextIdx = viewingIndex + 1;
+                      setViewingIndex(nextIdx);
+                      setViewingStory(stories[nextIdx]);
+                    }
+                  }}
+                  disabled={viewingIndex === stories.length - 1}
+                  style={{ gap: 6 }}
+                >
+                  Siguiente
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
