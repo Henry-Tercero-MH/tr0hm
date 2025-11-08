@@ -270,37 +270,181 @@ textarea{ min-height:100px; resize:vertical; }
 
 .criteria.unmet{ color:var(--muted); }
 
-/* Notifications WhatsApp style */
-.notifications-dropdown{ min-width:260px; max-height:320px; overflow:auto; padding:8px; }
+/* Notifications WhatsApp style - Panel mejorado */
+.notifications-dropdown{ 
+  min-width: 380px; 
+  max-width: 420px;
+  max-height: 520px; 
+  overflow: hidden; 
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(11, 20, 26, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--card);
+}
+
+[data-theme="dark"] .notifications-dropdown{
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Header del dropdown */
+.notifications-dropdown > div:first-child{
+  background: var(--card);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 14px 16px !important;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+[data-theme="dark"] .notifications-dropdown > div:first-child{
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Lista de notificaciones con scroll mejorado */
+.notifications-dropdown > div:last-child{
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.notifications-dropdown > div:last-child::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications-dropdown > div:last-child::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notifications-dropdown > div:last-child::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+[data-theme="dark"] .notifications-dropdown > div:last-child::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.notifications-dropdown > div:last-child::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .notifications-dropdown > div:last-child::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Item de notificación individual */
 .notification{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  border-radius:8px;
-  align-items:flex-start;
-  transition: background 150ms ease;
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 0;
+  align-items: flex-start;
+  transition: all 150ms ease;
+  cursor: pointer;
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.notification:last-child{
+  border-bottom: none;
 }
 
 .notification:hover{
-  background: rgba(0,0,0,0.03);
+  background: rgba(37, 211, 102, 0.08);
 }
 
 [data-theme="dark"] .notification:hover{
-  background: rgba(255,255,255,0.05);
+  background: rgba(0, 168, 132, 0.1);
 }
 
 .notification.unread{
-  background: rgba(37,211,102,0.08);
-  border-left:3px solid var(--primary);
+  background: rgba(37, 211, 102, 0.12);
+  position: relative;
+}
+
+.notification.unread::before{
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  border-radius: 0 2px 2px 0;
 }
 
 [data-theme="dark"] .notification.unread{
-  background: rgba(0,168,132,0.1);
-  border-left-color: var(--wa-green);
+  background: rgba(0, 168, 132, 0.15);
+}
+
+[data-theme="dark"] .notification.unread::before{
+  background: var(--wa-green);
+}
+
+/* Avatar en notificación */
+.notification .flex-shrink-0{
+  position: relative;
+}
+
+/* Contenido de notificación */
+.notification .flex-grow-1{
+  min-width: 0;
+  flex: 1;
+}
+
+.notification .text-truncate{
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.notification .muted{
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.notification .time{
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+/* Badge de no leída */
+.notification .badge-unread{
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  padding: 0;
+  background: var(--primary);
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--card);
+}
+
+[data-theme="dark"] .notification .badge-unread{
+  background: var(--wa-green);
+}
+
+/* Mensaje vacío */
+.notifications-dropdown .p-3{
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 40px 20px !important;
 }
 
 .notification .text{ font-size:14px; color:var(--text); }
 .notification .time{ font-size:12px; color:var(--muted); }
+
 
 /* Comments */
 .comment{ padding:8px; border-radius:8px; background: linear-gradient(180deg, rgba(243,246,255,0.6), rgba(255,255,255,0.6)); margin-bottom:8px; }

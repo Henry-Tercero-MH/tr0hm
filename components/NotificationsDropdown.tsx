@@ -3,7 +3,7 @@ import { useNotifications } from '../context/NotificationsContext';
 import api from '../lib/api';
 import { useRouter } from 'next/router';
 import UserBadge from './UserBadge';
-import { formatStable } from '../lib/formatDate';
+import { formatStable, formatCompact } from '../lib/formatDate';
 
 export default function NotificationsDropdown() {
   const { notifications, unreadCount, markAsRead } = useNotifications();
@@ -80,16 +80,49 @@ export default function NotificationsDropdown() {
 
   return (
     <div className="position-relative ms-2">
-      <button className="btn btn-ghost" onClick={() => setOpen(!open)} aria-label="Notifications">
-        🔔 {unreadCount > 0 ? `(${unreadCount})` : ''}
+      <button 
+        className="btn btn-ghost position-relative" 
+        onClick={() => setOpen(!open)} 
+        aria-label="Notifications"
+        style={{ fontSize: '20px' }}
+      >
+        🔔
+        {unreadCount > 0 && (
+          <span 
+            className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+            style={{
+              background: 'var(--primary)',
+              color: '#fff',
+              fontSize: '10px',
+              padding: '3px 6px',
+              minWidth: '18px',
+              fontWeight: 700
+            }}
+          >
+            {unreadCount}
+          </span>
+        )}
       </button>
       {open && (
-        <div className="dropdown-menu show dropdown-menu-end p-0" style={{ zIndex: 40 }}>
-          <div className="notifications-dropdown card">
-            <div className="p-2 border-bottom"><strong>Notificaciones</strong></div>
-            <div style={{ maxHeight: 320, overflow: 'auto' }}>
-              {notifications.length === 0 && <div className="p-3">No hay notificaciones</div>}
-              {notifications.map((n) => {
+        <>
+          <div 
+            className="position-fixed top-0 start-0 w-100 h-100" 
+            style={{ zIndex: 39 }}
+            onClick={() => setOpen(false)}
+          />
+          <div className="dropdown-menu show dropdown-menu-end p-0" style={{ zIndex: 40, position: 'absolute', right: 0, top: '100%', marginTop: '8px' }}>
+            <div className="notifications-dropdown">
+              <div className="border-bottom">
+                <strong>Notificaciones</strong>
+              </div>
+              <div style={{ maxHeight: 460 }}>
+                {notifications.length === 0 && (
+                  <div className="p-3">
+                    <div style={{ opacity: 0.6, fontSize: '48px', marginBottom: '12px' }}>🔔</div>
+                    <div>No hay notificaciones</div>
+                  </div>
+                )}
+                {notifications.map((n) => {
                 const payload = n.payload || {};
                 const actorId = payload.from || payload.userId || payload.followerId || null;
                 const actor = actorId ? usersCache[actorId] : null;
@@ -115,28 +148,39 @@ export default function NotificationsDropdown() {
                 }
 
                 return (
-                  <button key={n.id} className={`notification ${!n.read ? 'unread' : ''} dropdown-item d-flex align-items-center w-100 text-start p-2`} onClick={() => handleClick(n)}>
-                    <div className="flex-shrink-0 me-2" style={{ width: 44, height: 44 }}>
+                  <button 
+                    key={n.id} 
+                    className={`notification ${!n.read ? 'unread' : ''} w-100 text-start`} 
+                    onClick={() => handleClick(n)}
+                  >
+                    <div className="flex-shrink-0" style={{ width: 44, height: 44 }}>
                       {actor ? (
                         <UserBadge user={actor} size={44} showName={false} />
                       ) : (
-                        <div className="avatar-neon d-flex align-items-center justify-content-center" style={{ width: 44, height: 44, fontWeight: 700 }}>{(actorId ? String(actorId).slice(0,1) : 'N')}</div>
+                        <div className="avatar-neon d-flex align-items-center justify-content-center" style={{ width: 44, height: 44, fontWeight: 700, borderRadius: '50%' }}>
+                          {(actorId ? String(actorId).slice(0,1) : 'N')}
+                        </div>
                       )}
                     </div>
                     <div className="flex-grow-1" style={{ minWidth: 0 }}>
                       <div className="d-flex justify-content-between align-items-start" style={{ gap: 8 }}>
                         <div className="text-truncate fw-semibold">{title}</div>
-                        <div className="time ms-2 text-muted small" style={{ flex: '0 0 auto' }}>{formatStable(n.createdAt)}</div>
+                        <div className="time">{formatCompact(n.createdAt)}</div>
                       </div>
-                      {subtitle ? <div className="muted small mt-1 text-truncate">{subtitle}</div> : null}
+                      {subtitle ? <div className="muted mt-1 text-truncate">{subtitle}</div> : null}
                     </div>
-                    <div className="ms-2 align-self-center">{!n.read && <span className="badge-unread" />}</div>
+                    {!n.read && (
+                      <div className="align-self-start" style={{ marginTop: '8px' }}>
+                        <span className="badge-unread" />
+                      </div>
+                    )}
                   </button>
                 );
               })}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
