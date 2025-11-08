@@ -389,6 +389,17 @@ textarea{ min-height:100px; resize:vertical; }
 .story-avatar{ width: 64px; height: 64px; border-radius: 999px; object-fit: cover; display: inline-block; }
 .story-label{ font-size: 12px; margin-top: 6px; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .story-create-form{ margin-top: 8px; }
+.story-open-btn{ 
+  font-size: 12px; 
+  padding: 4px 8px; 
+  white-space: nowrap; 
+  background: var(--primary) !important; 
+  color: white !important; 
+  border-radius: 6px;
+}
+.story-open-btn:hover{ 
+  background: var(--accent) !important; 
+}
 
 /* mobile adjustments: smaller avatars and hide creation form to save space */
 @media (max-width:520px){
@@ -397,6 +408,7 @@ textarea{ min-height:100px; resize:vertical; }
   .story-avatar{ width: 48px; height: 48px; }
   .story-label{ font-size: 11px; }
   .story-create-form{ display: none; }
+  .story-open-btn{ font-size: 11px; padding: 3px 6px; }
   /* reposition pulse relative to avatar */
   .story-pulse{ position: absolute; top: 6px; right: 12px; margin-top: 0; margin-left: 0; width: 10px; height: 10px; }
 }

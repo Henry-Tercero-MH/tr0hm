@@ -336,11 +336,16 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   };
 
   const openStoryOrCreate = (idx: number) => {
-    // on small screens open the create modal instead of directly opening the story viewer
-    if (isClient && window.innerWidth <= 520) {
-      setShowCreateModal(true);
+    // idx=0 means creating, not viewing, so open modal on mobile
+    if (idx === 0) {
+      if (isClient && window.innerWidth <= 520) {
+        setShowCreateModal(true);
+        return;
+      }
+      // on desktop, the form is visible inline, do nothing
       return;
     }
+    // idx > 0 means open viewer
     openStoryByIndex(idx);
   };
 
