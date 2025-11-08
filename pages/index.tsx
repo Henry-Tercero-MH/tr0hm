@@ -336,13 +336,9 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   };
 
   const openStoryOrCreate = (idx: number) => {
-    // idx=0 means creating, not viewing, so open modal on mobile
+    // Always open modal for creating stories (idx === 0)
     if (idx === 0) {
-      if (isClient && window.innerWidth <= 520) {
-        setShowCreateModal(true);
-        return;
-      }
-      // on desktop, the form is visible inline, do nothing
+      setShowCreateModal(true);
       return;
     }
     // idx > 0 means open viewer
@@ -396,15 +392,8 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
               <div className="story-tile d-flex flex-column align-items-center">
                 {user.avatarUrl ? <img src={user.avatarUrl} className="story-avatar avatar" /> : <div className="story-avatar avatar" />}
                 <button className="btn btn-ghost mt-2 story-open-btn" onClick={() => openStoryOrCreate(0)}>
-                  Tu Historia
+                  + Crear
                 </button>
-                <form onSubmit={submitStory} className="w-100 mt-2 story-create-form">
-                  <input className="form-control mb-2" placeholder="Image URL" value={newStoryMedia} onChange={(e) => setNewStoryMedia(e.target.value)} />
-                  <input className="form-control mb-2" placeholder="Texto (opcional)" value={newStoryText} onChange={(e) => setNewStoryText(e.target.value)} />
-                  <div>
-                    <button className="btn btn-primary w-100" type="submit" disabled={creatingStory}>{creatingStory ? 'Publicando...' : 'Añadir'}</button>
-                  </div>
-                </form>
               </div>
             </div>
           )}
