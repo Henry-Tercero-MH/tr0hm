@@ -208,18 +208,26 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   };
 
   // URL detection and rendering helpers
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`\[\]]+)/g;
+  
+  const cleanUrl = (url: string): string => {
+    // Remove trailing punctuation that's not part of the URL
+    return url.replace(/[.,;:!?)\]]+$/, '');
+  };
   
   const isImageUrl = (url: string): boolean => {
-    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+    const cleanedUrl = cleanUrl(url);
+    return /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(cleanedUrl);
   };
 
   const isVideoUrl = (url: string): boolean => {
-    return /\.(mp4|webm|ogg)$/i.test(url);
+    const cleanedUrl = cleanUrl(url);
+    return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanedUrl);
   };
 
   const getYouTubeVideoId = (url: string): string | null => {
-    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    const cleanedUrl = cleanUrl(url);
+    const match = cleanedUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
     return match ? match[1] : null;
   };
 
@@ -233,7 +241,8 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
     parts.forEach((part, index) => {
       if (urlRegex.test(part)) {
         // It's a URL
-        const url = part.trim();
+        const rawUrl = part.trim();
+        const url = cleanUrl(rawUrl);
         
         // Check if we've already rendered this URL
         if (renderedUrls.has(url)) {
@@ -255,7 +264,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                   objectFit: 'contain', 
                   borderRadius: 8,
                   display: 'block',
-                  background: '#f5f5f5'
+                  background: 'var(--bg)'
                 }}
                 loading="lazy"
                 onError={(e) => {
@@ -263,7 +272,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                   const target = e.currentTarget;
                   const parent = target.parentElement;
                   if (parent) {
-                    parent.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="post-link" style="display: block; padding: 12px; text-align: center;">🖼️ ${url}</a>`;
+                    parent.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="post-link" style="display: block; padding: 12px; text-align: center; color: var(--primary);">🖼️ Error al cargar imagen: ${url}</a>`;
                   }
                 }}
               />
@@ -283,7 +292,7 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
                 }}
                 preload="metadata"
               >
-                <source src={url} />
+                <source src={url} type={url.endsWith('.mp4') ? 'video/mp4' : url.endsWith('.webm') ? 'video/webm' : 'video/ogg'} />
                 Tu navegador no soporta videos HTML5.
               </video>
             </div>
