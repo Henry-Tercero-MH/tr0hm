@@ -97,7 +97,10 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   const toggleLike = async (e: React.MouseEvent, postId: number) => {
     e.stopPropagation();
     e.preventDefault();
-    if (!user) return alert('Debes iniciar sesión');
+    if (!user) {
+      toast.show('Debes iniciar sesión para dar me gusta', 'info');
+      return;
+    }
     const liked = likedMap[postId];
     try {
       if (!liked) {
@@ -163,7 +166,10 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
   const submitComment = async (e: React.FormEvent, postId: number) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user) return alert('Debes iniciar sesión');
+    if (!user) {
+      toast.show('Debes iniciar sesión para comentar', 'info');
+      return;
+    }
     const text = commentText[postId];
     if (!text || text.trim().length === 0) return;
 
@@ -375,7 +381,10 @@ export default function Home({ posts: initialPosts, page, total }: { posts: Post
 
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return alert('Debes iniciar sesión');
+    if (!user) {
+      toast.show('Debes iniciar sesión para publicar', 'info');
+      return;
+    }
     if (!newPostText || newPostText.trim().length === 0) return;
     setCreatingPost(true);
     try {

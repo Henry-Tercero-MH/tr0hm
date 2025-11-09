@@ -40,7 +40,10 @@ export default function PostPage({ post }: { post: Post | null }) {
   if (!current) return <main><h1>Post no encontrado</h1></main>;
 
   const toggleLike = async () => {
-    if (!user) return alert('Debes estar logueado');
+    if (!user) {
+      toast.show('Debes iniciar sesión para dar me gusta', 'info');
+      return;
+    }
     try {
       if (!liked) {
         await api.post(`/api/posts/${current.id}/like`);
@@ -78,7 +81,10 @@ export default function PostPage({ post }: { post: Post | null }) {
 
   const submitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return alert('Debes estar logueado');
+    if (!user) {
+      toast.show('Debes iniciar sesión para comentar', 'info');
+      return;
+    }
     if (!commentText) return;
     try {
       const res = await api.post(`/api/posts/${current.id}`, { content: commentText });
